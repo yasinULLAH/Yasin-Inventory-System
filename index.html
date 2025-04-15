@@ -1,0 +1,4361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yasin Inventory System</title>
+  <style>
+    :root {
+      --primary: #3498db;
+      --primary-dark: #2980b9;
+      --secondary: #2ecc71;
+      --secondary-dark: #27ae60;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --dark: #34495e;
+      --light: #f5f5f5;
+      --grey: #95a5a6;
+      --white: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background-color: var(--dark);
+      color: var(--white);
+      padding: 20px 0;
+      transition: all 0.3s;
+    }
+
+    .sidebar-header {
+      padding: 0 20px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-header h2 {
+      margin-bottom: 10px;
+    }
+
+    .business-logo {
+      max-width: 100px;
+      max-height: 100px;
+      margin: 0 auto 10px;
+      display: block;
+      border-radius: 50%;
+      background-color: var(--white);
+      padding: 5px;
+    }
+
+    .business-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .sidebar .logo-placeholder {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 10px;
+      background-color: var(--grey);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--white);
+    }
+
+    .business-name {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .menu {
+      list-style: none;
+      padding: 20px 0;
+    }
+
+    .menu li {
+      position: relative;
+    }
+
+    .menu li a {
+      display: block;
+      padding: 15px 20px;
+      color: var(--white);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .menu li a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding-left: 25px;
+    }
+
+    .menu li a.active {
+      background-color: var(--primary);
+      border-left: 5px solid var(--secondary);
+    }
+
+    .menu li a i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      transition: all 0.3s;
+      overflow-y: auto;
+    }
+
+    .content-header {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .content-header h1 {
+      font-size: 24px;
+    }
+
+    /* Cards */
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+    }
+
+    .bg-primary {
+      background-color: var(--primary);
+    }
+
+    .bg-secondary {
+      background-color: var(--secondary);
+    }
+
+    .bg-danger {
+      background-color: var(--danger);
+    }
+
+    .bg-warning {
+      background-color: var(--warning);
+    }
+
+    .card-value {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .card-description {
+      color: var(--grey);
+      font-size: 14px;
+    }
+
+    /* Tables */
+    .table-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 30px;
+      overflow-x: auto;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th, table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+
+    table tr:last-child td {
+      border-bottom: none;
+    }
+
+    table tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    /* Forms */
+    .form-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .form-header {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .form-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -10px;
+    }
+
+    .form-group {
+      padding: 0 10px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .form-group.col-md-6 {
+        width: 50%;
+      }
+
+      .form-group.col-md-4 {
+        width: 33.333333%;
+      }
+
+      .form-group.col-md-3 {
+        width: 25%;
+      }
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2334495e' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      padding-right: 35px;
+    }
+
+    textarea.form-control {
+      min-height: 100px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      background-color: var(--grey);
+      color: var(--white);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn:focus {
+      outline: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+    }
+
+    .btn-warning {
+      background-color: var(--warning);
+    }
+
+    .btn-dark {
+      background-color: var(--dark);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 5px;
+    }
+
+    /* Custom Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px var(--primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+
+    .modal-backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background-color: var(--white);
+      border-radius: 8px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(-20px);
+      transition: transform 0.3s;
+    }
+
+    .modal-backdrop.show .modal {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--grey);
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-footer {
+      padding: 15px 20px;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Search */
+    .search-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 15px 10px 40px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--grey);
+    }
+
+    /* Status Badges */
+    .badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-success {
+      background-color: rgba(46, 204, 113, 0.2);
+      color: var(--secondary-dark);
+    }
+
+    .badge-warning {
+      background-color: rgba(243, 156, 18, 0.2);
+      color: var(--warning);
+    }
+
+    .badge-danger {
+      background-color: rgba(231, 76, 60, 0.2);
+      color: var(--danger);
+    }
+
+    .badge-primary {
+      background-color: rgba(52, 152, 219, 0.2);
+      color: var(--primary-dark);
+    }
+
+    /* Alert */
+    .alert {
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-success {
+      background-color: rgba(46, 204, 113, 0.2);
+      color: var(--secondary-dark);
+      border-left: 4px solid var(--secondary);
+    }
+
+    .alert-warning {
+      background-color: rgba(243, 156, 18, 0.2);
+      color: var(--warning);
+      border-left: 4px solid var(--warning);
+    }
+
+    .alert-danger {
+      background-color: rgba(231, 76, 60, 0.2);
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
+    }
+
+    .alert-info {
+      background-color: rgba(52, 152, 219, 0.2);
+      color: var(--primary-dark);
+      border-left: 4px solid var(--primary);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+      }
+
+      .dashboard-cards {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .dashboard-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-left-color: var(--primary);
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Transaction styles */
+    .transaction-form {
+      margin-bottom: 30px;
+    }
+
+    .transaction-items {
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 20px;
+    }
+
+    .transaction-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .transaction-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .transaction-totals {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+
+    .transaction-total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+
+    .transaction-total-label {
+      font-weight: 600;
+    }
+
+    .transaction-total-value {
+      font-weight: 600;
+    }
+
+    .transaction-grand-total {
+      border-top: 2px solid #ddd;
+      padding-top: 10px;
+      margin-top: 10px;
+      font-size: 18px;
+    }
+
+    /* Reports styles */
+    .report-filters {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .report-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .summary-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .summary-title {
+      font-size: 16px;
+      color: var(--grey);
+    }
+
+    .summary-value {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+
+    .summary-subtext {
+      font-size: 14px;
+      color: var(--grey);
+    }
+
+    .chart-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 30px;
+      height: 300px;
+    }
+
+    .settings-section {
+      margin-bottom: 30px;
+    }
+
+    .settings-title {
+      margin-bottom: 15px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    /* Print Styles */
+    @media print {
+      .sidebar, .btn, .non-printable {
+        display: none !important;
+      }
+
+      .main-content {
+        padding: 0;
+        width: 100%;
+      }
+
+      body, .container, .main-content {
+        background-color: white;
+      }
+
+      .card, .table-container, .form-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      .content-header {
+        margin-bottom: 30px;
+      }
+
+      .print-header {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .print-business-name {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .print-business-address {
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+
+      .print-business-contact {
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+
+      .print-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      .print-footer {
+        margin-top: 50px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--grey);
+      }
+    }
+
+    /* Custom CSS for tabs */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Additional utility classes */
+    .text-danger { color: var(--danger); }
+    .text-success { color: var(--secondary); }
+    .text-warning { color: var(--warning); }
+    .text-primary { color: var(--primary); }
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .mt-3 { margin-top: 15px; }
+    .mb-3 { margin-bottom: 15px; }
+    .ml-2 { margin-left: 10px; }
+    .mr-2 { margin-right: 10px; }
+    .hidden { display: none; }
+    .d-flex { display: flex; }
+    .justify-between { justify-content: space-between; }
+    .items-center { align-items: center; }
+    .w-100 { width: 100%; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="business-logo" id="businessLogo">
+          <div class="logo-placeholder">BS</div>
+        </div>
+        <div class="business-name" id="businessNameDisplay">Business Name</div>
+      </div>
+
+      <ul class="menu">
+        <li><a href="#" class="active" data-tab="dashboard">
+          <i>📊</i> Dashboard
+        </a></li>
+        <li><a href="#" data-tab="inventory">
+          <i>📦</i> Inventory
+        </a></li>
+        <li><a href="#" data-tab="customers">
+          <i>👥</i> Customers
+        </a></li>
+        <li><a href="#" data-tab="transactions">
+          <i>🔄</i> Transactions
+        </a></li>
+        <li><a href="#" data-tab="khata">
+          <i>📒</i> Customer Khata
+        </a></li>
+        <li><a href="#" data-tab="reports">
+          <i>📈</i> Reports
+        </a></li>
+        <li><a href="#" data-tab="settings">
+          <i>⚙️</i> Settings
+        </a></li>
+        <li><a href="#" data-tab="backup">
+          <i>💾</i> Backup & Restore
+        </a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Dashboard Tab -->
+      <div id="dashboard" class="tab-content active">
+        <div class="content-header">
+          <h1>Dashboard</h1>
+          <div id="currentDate"></div>
+        </div>
+
+        <div class="dashboard-cards">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Total Products</div>
+              <div class="card-icon bg-primary">📦</div>
+            </div>
+            <div class="card-value" id="totalProductsCount">0</div>
+            <div class="card-description">Items in inventory</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Total Customers</div>
+              <div class="card-icon bg-secondary">👥</div>
+            </div>
+            <div class="card-value" id="totalCustomersCount">0</div>
+            <div class="card-description">Registered customers</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Total Sales</div>
+              <div class="card-icon bg-success">💰</div>
+            </div>
+            <div class="card-value" id="totalSalesAmount">₹0</div>
+            <div class="card-description">Revenue from sales</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Outstanding Balance</div>
+              <div class="card-icon bg-warning">⚠️</div>
+            </div>
+            <div class="card-value" id="totalOutstandingAmount">₹0</div>
+            <div class="card-description">Total amount due</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <h2>Recent Transactions</h2>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recentTransactionsTable">
+              <!-- Transactions will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <h2>Low Stock Items</h2>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Current Stock</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="lowStockTable">
+              <!-- Low stock items will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Inventory Tab -->
+      <div id="inventory" class="tab-content">
+        <div class="content-header">
+          <h1>Inventory Management</h1>
+          <button class="btn btn-primary" id="addProductBtn">Add New Product</button>
+        </div>
+
+        <div class="search-container">
+          <input type="text" class="search-input" id="productSearchInput" placeholder="Search products...">
+          <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Cost Price</th>
+                <th>Selling Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="productsTable">
+              <!-- Products will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Customers Tab -->
+      <div id="customers" class="tab-content">
+        <div class="content-header">
+          <h1>Customer Management</h1>
+          <button class="btn btn-primary" id="addCustomerBtn">Add New Customer</button>
+        </div>
+
+        <div class="search-container">
+          <input type="text" class="search-input" id="customerSearchInput" placeholder="Search customers...">
+          <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Balance</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="customersTable">
+              <!-- Customers will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Transactions Tab -->
+      <div id="transactions" class="tab-content">
+        <div class="content-header">
+          <h1>Transactions</h1>
+          <div>
+            <button class="btn btn-primary" id="newBuyBtn">New Buy (Stock In)</button>
+            <button class="btn btn-secondary ml-2" id="newSellBtn">New Sell (Stock Out)</button>
+          </div>
+        </div>
+
+        <div class="search-container">
+          <input type="text" class="search-input" id="transactionSearchInput" placeholder="Search transactions...">
+          <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Balance</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="transactionsTable">
+              <!-- Transactions will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Customer Khata Tab -->
+      <div id="khata" class="tab-content">
+        <div class="content-header">
+          <h1>Customer Khata (Ledger)</h1>
+          <div>
+            <button class="btn btn-primary" id="addPaymentBtn">Record Payment</button>
+            <button class="btn btn-secondary ml-2" id="printKhataBtn">Print Khata</button>
+          </div>
+        </div>
+
+        <div class="form-container">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="form-label">Select Customer</label>
+              <select class="form-control" id="khataCustomerSelect">
+                <option value="">-- Select Customer --</option>
+                <!-- Customers will be loaded here -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="customerKhataDetails" class="hidden">
+          <div class="card mb-3">
+            <div class="d-flex justify-between items-center">
+              <div>
+                <h3 id="khataCustomerName">Customer Name</h3>
+                <div id="khataCustomerContact">Phone: | Email: </div>
+              </div>
+              <div>
+                <h3>Outstanding Balance: <span id="khataOutstandingBalance" class="text-danger">₹0</span></h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-header">
+              <h2>Transaction History</h2>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Debit</th>
+                  <th>Credit</th>
+                  <th>Balance</th>
+                </tr>
+              </thead>
+              <tbody id="khataTransactionsTable">
+                <!-- Khata transactions will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reports Tab -->
+      <div id="reports" class="tab-content">
+        <div class="content-header">
+          <h1>Reports</h1>
+          <button class="btn btn-primary" id="printReportBtn">Print Report</button>
+        </div>
+
+        <div class="report-filters">
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <label class="form-label">Report Type</label>
+              <select class="form-control" id="reportTypeSelect">
+                <option value="daily">Daily Summary</option>
+                <option value="date-range">Date Range</option>
+                <option value="customer">Per Customer</option>
+                <option value="product">Per Product</option>
+              </select>
+            </div>
+            <div class="form-group col-md-3" id="reportDateContainer">
+              <label class="form-label">Date</label>
+              <input type="date" class="form-control" id="reportDate">
+            </div>
+            <div class="form-group col-md-3 hidden" id="reportStartDateContainer">
+              <label class="form-label">Start Date</label>
+              <input type="date" class="form-control" id="reportStartDate">
+            </div>
+            <div class="form-group col-md-3 hidden" id="reportEndDateContainer">
+              <label class="form-label">End Date</label>
+              <input type="date" class="form-control" id="reportEndDate">
+            </div>
+            <div class="form-group col-md-3 hidden" id="reportCustomerContainer">
+              <label class="form-label">Customer</label>
+              <select class="form-control" id="reportCustomerSelect">
+                <option value="">-- Select Customer --</option>
+                <!-- Customers will be loaded here -->
+              </select>
+            </div>
+            <div class="form-group col-md-3 hidden" id="reportProductContainer">
+              <label class="form-label">Product</label>
+              <select class="form-control" id="reportProductSelect">
+                <option value="">-- Select Product --</option>
+                <!-- Products will be loaded here -->
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+        </div>
+
+        <div id="reportResults" class="hidden">
+          <div class="report-summary">
+            <div class="summary-card">
+              <div class="summary-title">Total Sales</div>
+              <div class="summary-value" id="reportTotalSales">₹0</div>
+              <div class="summary-subtext">Revenue from sales</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-title">Total Purchases</div>
+              <div class="summary-value" id="reportTotalPurchases">₹0</div>
+              <div class="summary-subtext">Cost of goods</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-title">Total Profit</div>
+              <div class="summary-value" id="reportTotalProfit">₹0</div>
+              <div class="summary-subtext">Gross profit</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-title">Items Sold</div>
+              <div class="summary-value" id="reportItemsSold">0</div>
+              <div class="summary-subtext">Total quantity</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-header">
+              <h2 id="reportTableTitle">Report Details</h2>
+            </div>
+            <table id="reportTable">
+              <thead id="reportTableHead">
+                <!-- Report table headers will be set dynamically -->
+              </thead>
+              <tbody id="reportTableBody">
+                <!-- Report data will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Tab -->
+      <div id="settings" class="tab-content">
+        <div class="content-header">
+          <h1>Settings</h1>
+          <button class="btn btn-primary" id="saveSettingsBtn">Save Settings</button>
+        </div>
+
+        <div class="form-container">
+          <div class="settings-section">
+            <h3 class="settings-title">Business Information</h3>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label class="form-label">Business Name</label>
+                <input type="text" class="form-control" id="businessName" placeholder="Enter business name">
+              </div>
+              <div class="form-group col-md-6">
+                <label class="form-label">Business Phone</label>
+                <input type="tel" class="form-control" id="businessPhone" placeholder="Enter phone number">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label class="form-label">Business Email</label>
+                <input type="email" class="form-control" id="businessEmail" placeholder="Enter email address">
+              </div>
+              <div class="form-group col-md-6">
+                <label class="form-label">Currency Symbol</label>
+                <input type="text" class="form-control" id="currencySymbol" placeholder="₹" value="₹">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label class="form-label">Business Address</label>
+                <textarea class="form-control" id="businessAddress" placeholder="Enter full address"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-title">Business Logo</h3>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label class="form-label">Upload Logo</label>
+                <input type="file" id="logoUpload" accept="image/*">
+                <div class="mt-3">
+                  <div id="logoPreview" style="width: 100px; height: 100px; border-radius: 50%; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                    <div class="logo-placeholder">BS</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-title">System Settings</h3>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label class="form-label">Low Stock Warning Threshold</label>
+                <input type="number" class="form-control" id="lowStockThreshold" placeholder="5" value="5">
+              </div>
+              <div class="form-group col-md-6">
+                <label class="form-label">Auto Backup Interval (minutes)</label>
+                <input type="number" class="form-control" id="backupInterval" placeholder="10" value="10">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backup & Restore Tab -->
+      <div id="backup" class="tab-content">
+        <div class="content-header">
+          <h1>Backup & Restore</h1>
+        </div>
+
+        <div class="form-container">
+          <div class="settings-section">
+            <h3 class="settings-title">Manual Backup</h3>
+            <p class="mb-3">Create a backup of all your data and download it to your computer.</p>
+            <button class="btn btn-primary" id="manualBackupBtn">Create Backup</button>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-title">Automatic Backup</h3>
+            <p class="mb-3">System automatically creates backups every <span id="autoBackupInterval">10</span> minutes.</p>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label class="form-label">Auto Backup Status</label>
+                <div class="switch">
+                  <input type="checkbox" id="autoBackupSwitch" checked>
+                  <span class="slider"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-title">Restore Data</h3>
+            <p class="mb-3">Restore your data from a previously created backup file.</p>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label class="form-label">Select Backup File</label>
+                <input type="file" id="restoreFile" accept=".json">
+              </div>
+            </div>
+            <button class="btn btn-warning" id="restoreBackupBtn">Restore Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Product Modal -->
+  <div class="modal-backdrop" id="productModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="productModalTitle">Add New Product</h3>
+        <button class="modal-close" id="closeProductModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="productForm">
+          <input type="hidden" id="productId">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="form-label">Product Name</label>
+              <input type="text" class="form-control" id="productName" placeholder="Product name" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label">SKU</label>
+              <input type="text" class="form-control" id="productSku" placeholder="Stock keeping unit">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="form-label">Category</label>
+              <input type="text" class="form-control" id="productCategory" placeholder="Category">
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label">Initial Stock</label>
+              <input type="number" class="form-control" id="productStock" placeholder="0" min="0">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="form-label">Cost Price</label>
+              <input type="number" class="form-control" id="productCostPrice" placeholder="0.00" min="0" step="0.01" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label">Selling Price</label>
+              <input type="number" class="form-control" id="productSellingPrice" placeholder="0.00" min="0" step="0.01" required>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="cancelProductBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveProductBtn">Save Product</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Customer Modal -->
+  <div class="modal-backdrop" id="customerModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="customerModalTitle">Add New Customer</h3>
+        <button class="modal-close" id="closeCustomerModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="customerForm">
+          <input type="hidden" id="customerId">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="form-label">Customer Name</label>
+              <input type="text" class="form-control" id="customerName" placeholder="Full name" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-control" id="customerPhone" placeholder="Phone number">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" id="customerEmail" placeholder="Email address">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label class="form-label">Address</label>
+              <textarea class="form-control" id="customerAddress" placeholder="Full address"></textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label class="form-label">Notes</label>
+              <textarea class="form-control" id="customerNotes" placeholder="Additional notes"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="cancelCustomerBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveCustomerBtn">Save Customer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction Modal -->
+  <div class="modal-backdrop" id="transactionModal">
+    <div class="modal" style="max-width: 800px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="transactionModalTitle">New Transaction</h3>
+        <button class="modal-close" id="closeTransactionModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="transactionForm">
+          <input type="hidden" id="transactionId">
+          <input type="hidden" id="transactionType" value="sell">
+          
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="form-label">Date</label>
+              <input type="date" class="form-control" id="transactionDate" required>
+            </div>
+            <div class="form-group col-md-6" id="customerSelectGroup">
+              <label class="form-label">Customer</label>
+              <select class="form-control" id="transactionCustomer">
+                <option value="">-- Select Customer --</option>
+                <!-- Customers will be loaded here -->
+              </select>
+            </div>
+          </div>
+
+          <div class="transaction-items">
+            <h4 class="mb-3">Items</h4>
+            <div id="transactionItemsContainer">
+              <!-- Transaction items will be added here -->
+            </div>
+            <button type="button" class="btn btn-sm btn-secondary mt-3" id="addTransactionItemBtn">Add Item</button>
+          </div>
+
+          <div class="transaction-totals">
+            <div class="transaction-total-row">
+              <div class="transaction-total-label">Subtotal:</div>
+              <div class="transaction-total-value" id="transactionSubtotal">₹0.00</div>
+            </div>
+            <div class="transaction-total-row" id="paymentSection">
+              <div class="transaction-total-label">Amount Paid:</div>
+              <div class="transaction-total-value">
+                <input type="number" class="form-control" id="transactionPaid" placeholder="0.00" min="0" step="0.01">
+              </div>
+            </div>
+            <div class="transaction-total-row" id="balanceSection">
+              <div class="transaction-total-label">Balance Due:</div>
+              <div class="transaction-total-value" id="transactionBalance">₹0.00</div>
+            </div>
+            <div class="transaction-total-row transaction-grand-total">
+              <div class="transaction-total-label">Total:</div>
+              <div class="transaction-total-value" id="transactionTotal">₹0.00</div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="cancelTransactionBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveTransactionBtn">Save Transaction</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div class="modal-backdrop" id="paymentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Record Payment</h3>
+        <button class="modal-close" id="closePaymentModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="paymentForm">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="form-label">Date</label>
+              <input type="date" class="form-control" id="paymentDate" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label">Customer</label>
+              <select class="form-control" id="paymentCustomer" required>
+                <option value="">-- Select Customer --</option>
+                <!-- Customers will be loaded here -->
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="form-label">Amount</label>
+              <input type="number" class="form-control" id="paymentAmount" placeholder="0.00" min="0" step="0.01" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label">Current Outstanding</label>
+              <input type="text" class="form-control" id="paymentOutstanding" readonly>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label class="form-label">Notes</label>
+              <textarea class="form-control" id="paymentNotes" placeholder="Payment notes"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="cancelPaymentBtn">Cancel</button>
+        <button class="btn btn-primary" id="savePaymentBtn">Save Payment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Transaction Modal -->
+  <div class="modal-backdrop" id="viewTransactionModal">
+    <div class="modal" style="max-width: 800px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Transaction Details</h3>
+        <button class="modal-close" id="closeViewTransactionModal">&times;</button>
+      </div>
+      <div class="modal-body" id="viewTransactionBody">
+        <!-- Transaction details will be loaded here -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="closeViewTransactionBtn">Close</button>
+        <button class="btn btn-primary" id="printTransactionBtn">Print</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-backdrop" id="deleteConfirmModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Delete</h3>
+        <button class="modal-close" id="closeDeleteConfirmModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteConfirmMessage">Are you sure you want to delete this item?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="cancelDeleteBtn">Cancel</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Modal -->
+  <div class="modal-backdrop" id="alertModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="alertTitle">Alert</h3>
+        <button class="modal-close" id="closeAlertModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="alertMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="okAlertBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+   // Database initialization
+    let db;
+    let autoBackupIntervalId; // Changed variable name for clarity
+    let settings = {
+      businessName: 'My Business',
+      businessPhone: '',
+      businessEmail: '',
+      businessAddress: '',
+      currencySymbol: '₹',
+      logoData: null,
+      lowStockThreshold: 5,
+      backupInterval: 10, // In minutes
+      enableAutoBackup: true
+    };
+
+    // Initialize the database
+    function initDatabase() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open('InventorySystemDB', 1);
+
+        request.onerror = function(event) {
+          console.error('Database error:', event.target.errorCode);
+          showAlert('Error', 'Failed to open database. This app requires IndexedDB support in your browser. Please ensure it is enabled and try again.');
+          reject('Failed to open database');
+        };
+
+        request.onupgradeneeded = function(event) {
+          db = event.target.result;
+          console.log('Database upgrade needed.');
+
+          // Create object stores with indexes
+          if (!db.objectStoreNames.contains('products')) {
+            const productStore = db.createObjectStore('products', { keyPath: 'id', autoIncrement: true });
+            productStore.createIndex('sku', 'sku', { unique: true });
+            productStore.createIndex('name', 'name', { unique: false });
+            productStore.createIndex('category', 'category', { unique: false });
+            console.log('Created products object store.');
+          }
+
+          if (!db.objectStoreNames.contains('customers')) {
+            const customerStore = db.createObjectStore('customers', { keyPath: 'id', autoIncrement: true });
+            customerStore.createIndex('phone', 'phone', { unique: false });
+            customerStore.createIndex('email', 'email', { unique: false });
+            customerStore.createIndex('name', 'name', { unique: false });
+            customerStore.createIndex('balance', 'balance', { unique: false }); // Index for balance
+            console.log('Created customers object store.');
+          }
+
+          if (!db.objectStoreNames.contains('transactions')) {
+            const transactionStore = db.createObjectStore('transactions', { keyPath: 'id', autoIncrement: true });
+            transactionStore.createIndex('date', 'date', { unique: false });
+            transactionStore.createIndex('type', 'type', { unique: false });
+            transactionStore.createIndex('customerId', 'customerId', { unique: false });
+            console.log('Created transactions object store.');
+          }
+
+          if (!db.objectStoreNames.contains('payments')) {
+            const paymentStore = db.createObjectStore('payments', { keyPath: 'id', autoIncrement: true });
+            paymentStore.createIndex('date', 'date', { unique: false });
+            paymentStore.createIndex('customerId', 'customerId', { unique: false });
+            console.log('Created payments object store.');
+          }
+
+          if (!db.objectStoreNames.contains('settings')) {
+            db.createObjectStore('settings', { keyPath: 'id' });
+            console.log('Created settings object store.');
+          }
+        };
+
+        request.onsuccess = function(event) {
+          db = event.target.result;
+          console.log('Database opened successfully');
+          resolve(); // Resolve the promise when done
+        };
+      });
+    }
+
+    // Utility functions
+    function formatCurrency(amount) {
+      const parsedAmount = parseFloat(amount);
+      if (isNaN(parsedAmount)) return `${settings.currencySymbol}0.00`;
+      return `${settings.currencySymbol}${parsedAmount.toFixed(2)}`;
+    }
+
+    function formatDate(dateStringOrDate) {
+      const date = dateStringOrDate instanceof Date ? dateStringOrDate : new Date(dateStringOrDate);
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+      }
+      // Using ISO format (YYYY-MM-DD) for consistency, but display can be localized
+      // return date.toLocaleDateString('en-IN', {
+      //   year: 'numeric',
+      //   month: 'short',
+      //   day: 'numeric'
+      // });
+      return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+    }
+
+    // function generateUniqueId() { // Not needed with autoIncrement keys
+    //   return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    // }
+
+    function getCurrentDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+      const day = now.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function setCurrentDateDisplay() {
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    function setDefaultDateInputs() {
+        const today = getCurrentDate();
+        const dateInputs = document.querySelectorAll('input[type="date"]');
+        dateInputs.forEach(input => {
+            if (!input.value) { // Only set if not already set (e.g., by editing)
+                input.value = today;
+            }
+        });
+    }
+
+    function showAlert(title, message) {
+      document.getElementById('alertTitle').textContent = title;
+      document.getElementById('alertMessage').textContent = message;
+      document.getElementById('alertModal').classList.add('show');
+    }
+
+    function closeAlertModal() {
+        document.getElementById('alertModal').classList.remove('show');
+    }
+
+    function getObjectStore(storeName, mode) {
+      if (!db) {
+          console.error("Database not initialized yet!");
+          showAlert('Error', 'Database connection is not available.');
+          return null; // Or handle appropriately
+      }
+      try {
+          const transaction = db.transaction(storeName, mode);
+          transaction.onerror = (event) => {
+              console.error(`Transaction error on ${storeName}:`, event.target.error);
+          };
+          return transaction.objectStore(storeName);
+      } catch (e) {
+          console.error(`Error getting object store ${storeName} with mode ${mode}:`, e);
+          showAlert('Error', `Database operation failed: ${e.message}`);
+          return null;
+      }
+    }
+
+    // --- Settings ---
+    function saveSettings() {
+      const store = getObjectStore('settings', 'readwrite');
+      if (!store) return;
+
+      // Update settings object from form fields
+      settings.businessName = document.getElementById('businessName').value.trim() || 'My Business';
+      settings.businessPhone = document.getElementById('businessPhone').value.trim();
+      settings.businessEmail = document.getElementById('businessEmail').value.trim();
+      settings.businessAddress = document.getElementById('businessAddress').value.trim();
+      settings.currencySymbol = document.getElementById('currencySymbol').value.trim() || '₹';
+      settings.lowStockThreshold = parseInt(document.getElementById('lowStockThreshold').value) || 5;
+      settings.backupInterval = parseInt(document.getElementById('backupInterval').value) || 10;
+      settings.enableAutoBackup = document.getElementById('autoBackupSwitch').checked;
+      // Logo data is handled separately during upload
+
+      const request = store.put({
+        id: 1, // Using a fixed ID for the single settings object
+        ...settings
+      });
+
+      request.onsuccess = function() {
+        showAlert('Success', 'Settings saved successfully!');
+        updateBusinessInfoUI();
+        resetAutoBackup(); // Restart backup interval if changed
+        loadDashboardData(); // Refresh dashboard in case currency/threshold changed
+        loadProductsTable(); // Refresh products table for low stock indication
+      };
+
+      request.onerror = function(event) {
+        console.error("Error saving settings:", event.target.error);
+        showAlert('Error', `Failed to save settings: ${event.target.error.message}`);
+      };
+    }
+
+    function loadSettings() {
+      return new Promise((resolve, reject) => {
+          const store = getObjectStore('settings', 'readonly');
+          if (!store) {
+              reject("Failed to get settings store");
+              return;
+          }
+          const request = store.get(1); // Get the settings object with ID 1
+
+          request.onsuccess = function(event) {
+              if (event.target.result) {
+                  // Merge saved settings with defaults (in case new settings were added)
+                  settings = { ...settings, ...event.target.result };
+                  console.log("Settings loaded:", settings);
+                  updateSettingsUI();
+                  updateBusinessInfoUI();
+                  resolve();
+              } else {
+                  console.log("No settings found in DB, using defaults.");
+                  // Optionally save default settings here if it's the first run
+                   const writeStore = getObjectStore('settings', 'readwrite');
+                   if (writeStore) {
+                       writeStore.put({ id: 1, ...settings });
+                   }
+                   updateSettingsUI(); // Update UI with defaults
+                   updateBusinessInfoUI();
+                  resolve(); // Resolve even if no settings were found, using defaults
+              }
+          };
+
+          request.onerror = function(event) {
+              console.error("Error loading settings:", event.target.error);
+              showAlert('Error', `Failed to load settings: ${event.target.error.message}`);
+              // Still update UI with defaults if loading fails
+              updateSettingsUI();
+              updateBusinessInfoUI();
+              reject(event.target.error);
+          };
+      });
+    }
+
+    function updateSettingsUI() {
+      document.getElementById('businessName').value = settings.businessName;
+      document.getElementById('businessPhone').value = settings.businessPhone;
+      document.getElementById('businessEmail').value = settings.businessEmail;
+      document.getElementById('businessAddress').value = settings.businessAddress;
+      document.getElementById('currencySymbol').value = settings.currencySymbol;
+      document.getElementById('lowStockThreshold').value = settings.lowStockThreshold;
+      document.getElementById('backupInterval').value = settings.backupInterval;
+      document.getElementById('autoBackupInterval').textContent = settings.backupInterval;
+      document.getElementById('autoBackupSwitch').checked = settings.enableAutoBackup;
+
+      // Update logo preview
+      const logoPreview = document.getElementById('logoPreview');
+      const logoPlaceholder = '<div class="logo-placeholder">BS</div>'; // Default placeholder
+      if (settings.logoData) {
+        logoPreview.innerHTML = `<img src="${settings.logoData}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">`;
+      } else {
+        logoPreview.innerHTML = logoPlaceholder;
+      }
+    }
+
+    function updateBusinessInfoUI() {
+      document.getElementById('businessNameDisplay').textContent = settings.businessName;
+      const businessLogoContainer = document.getElementById('businessLogo');
+      if (settings.logoData) {
+          businessLogoContainer.innerHTML = `<img src="${settings.logoData}" alt="Business Logo">`;
+      } else {
+          // Generate initials for placeholder
+          const initials = settings.businessName.split(' ').map(word => word[0]).join('').substring(0, 2).toUpperCase() || 'BS';
+          businessLogoContainer.innerHTML = `<div class="logo-placeholder">${initials}</div>`;
+      }
+       // Update currency symbol in relevant places if needed (e.g., modal totals)
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = settings.currencySymbol);
+    }
+
+    function handleLogoUpload(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                settings.logoData = e.target.result; // Store base64 data URL
+                // Update preview immediately
+                document.getElementById('logoPreview').innerHTML = `<img src="${settings.logoData}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">`;
+                // Note: The setting is saved only when "Save Settings" is clicked
+            }
+            reader.readAsDataURL(file);
+        } else {
+            showAlert('Warning', 'Please select a valid image file.');
+        }
+    }
+
+
+    // --- CRUD operations ---
+
+    // Generic Add/Update function
+    function saveData(storeName, data) {
+        return new Promise((resolve, reject) => {
+            const store = getObjectStore(storeName, 'readwrite');
+            if (!store) return reject(`Failed to get store: ${storeName}`);
+
+            // Use put for both add and update. If data has an id, it updates; otherwise, it adds.
+            const request = store.put(data);
+
+            request.onsuccess = (event) => resolve(event.target.result); // Returns the key of the added/updated record
+            request.onerror = (event) => {
+                console.error(`Error saving data to ${storeName}:`, event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Generic Get function
+    function getData(storeName, key) {
+        return new Promise((resolve, reject) => {
+            const store = getObjectStore(storeName, 'readonly');
+             if (!store) return reject(`Failed to get store: ${storeName}`);
+            const request = store.get(key);
+
+            request.onsuccess = (event) => resolve(event.target.result); // Returns the record or undefined
+            request.onerror = (event) => {
+                console.error(`Error getting data from ${storeName} with key ${key}:`, event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Generic Get All function
+    function getAllData(storeName) {
+        return new Promise((resolve, reject) => {
+            const store = getObjectStore(storeName, 'readonly');
+             if (!store) return reject(`Failed to get store: ${storeName}`);
+            const request = store.getAll();
+
+            request.onsuccess = (event) => resolve(event.target.result); // Returns an array of records
+            request.onerror = (event) => {
+                console.error(`Error getting all data from ${storeName}:`, event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+     // Generic Get All by Index function
+    function getAllDataByIndex(storeName, indexName, key) {
+        return new Promise((resolve, reject) => {
+            const store = getObjectStore(storeName, 'readonly');
+            if (!store) return reject(`Failed to get store: ${storeName}`);
+            try {
+                const index = store.index(indexName);
+                const request = index.getAll(key);
+
+                request.onsuccess = (event) => resolve(event.target.result); // Returns an array of records
+                request.onerror = (event) => {
+                    console.error(`Error getting data from index ${indexName} in ${storeName}:`, event.target.error);
+                    reject(event.target.error);
+                };
+            } catch (e) {
+                 console.error(`Error accessing index ${indexName} in ${storeName}:`, e);
+                 reject(e);
+            }
+        });
+    }
+
+    // Generic Delete function
+    function deleteData(storeName, key) {
+        return new Promise((resolve, reject) => {
+            const store = getObjectStore(storeName, 'readwrite');
+            if (!store) return reject(`Failed to get store: ${storeName}`);
+            const request = store.delete(key);
+
+            request.onsuccess = () => resolve(true);
+            request.onerror = (event) => {
+                console.error(`Error deleting data from ${storeName} with key ${key}:`, event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+
+    // --- Product Specific ---
+    function addProduct(product) {
+        // Add validation if needed
+        return saveData('products', product);
+    }
+
+    function getProduct(id) {
+        return getData('products', id);
+    }
+
+    function getAllProducts() {
+        return getAllData('products');
+    }
+
+    function deleteProduct(id) {
+       // TODO: Check if product is used in transactions before deleting? Or handle dangling references.
+       // For now, just delete.
+        return deleteData('products', id);
+    }
+
+    // Update product stock (handles both addition and subtraction)
+    async function updateProductStock(productId, quantityChange) {
+        const store = getObjectStore('products', 'readwrite');
+        if (!store) throw new Error("Failed to get products store");
+
+        const product = await getProduct(productId);
+        if (!product) throw new Error(`Product with ID ${productId} not found`);
+
+        const currentStock = parseInt(product.stock || 0);
+        const newStock = currentStock + parseInt(quantityChange); // quantityChange can be negative
+
+        if (newStock < 0) {
+             // Optional: Prevent stock from going negative depending on requirements
+            // throw new Error(`Insufficient stock for product ${product.name}. Required: ${-quantityChange}, Available: ${currentStock}`);
+             console.warn(`Stock for product ${product.name} (${productId}) is now negative (${newStock}).`);
+        }
+
+        product.stock = newStock;
+        return saveData('products', product); // Use put which handles updates
+    }
+
+
+    // --- Customer Specific ---
+    function addCustomer(customer) {
+        // Add validation if needed
+        if (!customer.balance) customer.balance = 0; // Ensure balance is initialized
+        return saveData('customers', customer);
+    }
+
+    function getCustomer(id) {
+        return getData('customers', id);
+    }
+
+    function getAllCustomers() {
+        return getAllData('customers');
+    }
+
+    function deleteCustomer(id) {
+        // TODO: Check outstanding balance or transactions before deleting?
+        // For now, just delete. Consider implications for Khata.
+        return deleteData('customers', id);
+    }
+
+    // Update customer balance (handles both addition/credit and subtraction/debit)
+    async function updateCustomerBalance(customerId, amountChange) {
+         if (!customerId) {
+            console.log("Update balance called without customerId (likely walk-in). Skipping.");
+            return; // No customer to update balance for
+         }
+
+        const store = getObjectStore('customers', 'readwrite');
+         if (!store) throw new Error("Failed to get customers store");
+
+        const customer = await getCustomer(customerId);
+        if (!customer) throw new Error(`Customer with ID ${customerId} not found`);
+
+        const currentBalance = parseFloat(customer.balance || 0);
+        const newBalance = currentBalance + parseFloat(amountChange); // amountChange can be negative
+
+        customer.balance = newBalance;
+        return saveData('customers', customer); // Use put for update
+    }
+
+
+    // --- Transaction Specific ---
+    async function addTransaction(transaction) {
+        const transactionStore = getObjectStore('transactions', 'readwrite');
+        if (!transactionStore) throw new Error("Failed to get transactions store");
+
+        // 1. Start transaction processing
+        console.log("Processing transaction:", transaction);
+
+        // 2. Update stock for each item
+        const stockUpdatePromises = transaction.items.map(item => {
+            const quantityChange = transaction.type === 'buy' ? parseInt(item.quantity) : -parseInt(item.quantity);
+            return updateProductStock(item.productId, quantityChange);
+        });
+
+        try {
+            await Promise.all(stockUpdatePromises);
+            console.log("Stock updated successfully.");
+
+            // 3. Calculate balance impact
+            const balanceChange = transaction.type === 'sell' ? (parseFloat(transaction.total) - parseFloat(transaction.paid)) : 0; // Purchases don't affect customer balance directly
+
+             // 4. Update customer balance if it's a sale with balance due
+             if (transaction.type === 'sell' && transaction.customerId && balanceChange > 0) {
+                 await updateCustomerBalance(transaction.customerId, balanceChange);
+                 console.log("Customer balance updated.");
+             }
+
+             // 5. Save the transaction itself
+             const savedTransactionId = await saveData('transactions', transaction);
+             console.log("Transaction saved with ID:", savedTransactionId);
+             return savedTransactionId; // Return the ID of the saved transaction
+
+        } catch (error) {
+             console.error("Error processing transaction:", error);
+            // TODO: Implement rollback logic if possible/needed.
+            // This is complex with IndexedDB. At minimum, log the failure.
+            // For stock: reverse the changes (requires knowing original stock or adding compensation logic).
+            // For balance: reverse the change.
+            // For transaction save: it might have failed before saving.
+            showAlert('Error', `Transaction failed: ${error.message}. Some data might be inconsistent.`);
+            throw error; // Re-throw the error
+        }
+    }
+
+    function getTransaction(id) {
+        return getData('transactions', id);
+    }
+
+    function getAllTransactions() {
+        return getAllData('transactions');
+    }
+
+    function getTransactionsByCustomer(customerId) {
+        return getAllDataByIndex('transactions', 'customerId', customerId);
+    }
+
+    async function deleteTransaction(id) {
+        const transactionStore = getObjectStore('transactions', 'readwrite');
+         if (!transactionStore) throw new Error("Failed to get transactions store");
+
+        const transaction = await getTransaction(id);
+        if (!transaction) throw new Error(`Transaction with ID ${id} not found`);
+
+        console.log("Deleting transaction:", transaction);
+
+        // Rollback stock changes
+        const stockRollbackPromises = transaction.items.map(item => {
+             // Reverse the original change
+            const quantityChange = transaction.type === 'buy' ? -parseInt(item.quantity) : parseInt(item.quantity);
+            return updateProductStock(item.productId, quantityChange);
+        });
+
+        try {
+            await Promise.all(stockRollbackPromises);
+             console.log("Stock changes rolled back.");
+
+             // Rollback customer balance if it was a sale with balance
+             if (transaction.type === 'sell' && transaction.customerId) {
+                 const balanceChange = parseFloat(transaction.total) - parseFloat(transaction.paid);
+                 if (balanceChange > 0) {
+                     // Reverse the balance addition
+                     await updateCustomerBalance(transaction.customerId, -balanceChange);
+                     console.log("Customer balance rolled back.");
+                 }
+             }
+
+             // Delete the transaction itself
+             await deleteData('transactions', id);
+             console.log("Transaction deleted successfully.");
+             return true;
+
+        } catch (error) {
+            console.error("Error deleting transaction and rolling back:", error);
+            showAlert('Error', `Failed to delete transaction: ${error.message}. Data might be inconsistent.`);
+            throw error;
+        }
+    }
+
+    // --- Payment Specific ---
+    async function addPayment(payment) {
+        const paymentStore = getObjectStore('payments', 'readwrite');
+        if (!paymentStore) throw new Error("Failed to get payments store");
+
+        console.log("Processing payment:", payment);
+
+        try {
+            // 1. Update customer balance (payment reduces outstanding balance)
+            const balanceChange = -parseFloat(payment.amount);
+            await updateCustomerBalance(payment.customerId, balanceChange);
+            console.log("Customer balance updated for payment.");
+
+            // 2. Save the payment record
+            const savedPaymentId = await saveData('payments', payment);
+            console.log("Payment saved with ID:", savedPaymentId);
+            return savedPaymentId;
+
+        } catch (error) {
+            console.error("Error processing payment:", error);
+            // TODO: Rollback balance change if possible
+            showAlert('Error', `Payment failed: ${error.message}.`);
+            throw error;
+        }
+    }
+
+    function getAllPayments() {
+        return getAllData('payments');
+    }
+
+    function getPaymentsByCustomer(customerId) {
+        return getAllDataByIndex('payments', 'customerId', customerId);
+    }
+
+    // Note: Deleting payments might require adjusting customer balance back.
+    async function deletePayment(id) {
+        const payment = await getData('payments', id);
+         if (!payment) throw new Error(`Payment with ID ${id} not found`);
+
+         console.log("Deleting payment:", payment);
+
+         try {
+            // Rollback customer balance (add the payment amount back to balance)
+             await updateCustomerBalance(payment.customerId, parseFloat(payment.amount));
+             console.log("Customer balance rolled back for deleted payment.");
+
+             // Delete the payment record
+             await deleteData('payments', id);
+             console.log("Payment deleted successfully.");
+             return true;
+         } catch (error) {
+             console.error("Error deleting payment and rolling back:", error);
+             showAlert('Error', `Failed to delete payment: ${error.message}. Data might be inconsistent.`);
+             throw error;
+         }
+    }
+
+    // --- Data Loading and UI Update Functions ---
+    async function loadDashboardData() {
+        console.log("Loading dashboard data...");
+        try {
+            // Use Promise.allSettled to handle potential errors in individual loads
+            const results = await Promise.allSettled([
+                getAllProducts(),
+                getAllCustomers(),
+                getAllTransactions()
+                // Add other promises if needed (e.g., recent payments)
+            ]);
+
+            const products = results[0].status === 'fulfilled' ? results[0].value : [];
+            const customers = results[1].status === 'fulfilled' ? results[1].value : [];
+            const transactions = results[2].status === 'fulfilled' ? results[2].value : [];
+
+             // Log errors if any promises failed
+             results.forEach((result, index) => {
+                 if (result.status === 'rejected') {
+                     console.error(`Error loading data part ${index}:`, result.reason);
+                 }
+             });
+
+            // Update counts
+            document.getElementById('totalProductsCount').textContent = products.length;
+            document.getElementById('totalCustomersCount').textContent = customers.length;
+
+            // Calculate total sales (from 'sell' transactions)
+            const totalSales = transactions
+                .filter(t => t.type === 'sell')
+                .reduce((sum, t) => sum + parseFloat(t.total || 0), 0);
+            document.getElementById('totalSalesAmount').textContent = formatCurrency(totalSales);
+
+            // Calculate total outstanding balance (sum of customer balances)
+            const totalOutstanding = customers.reduce((sum, c) => sum + parseFloat(c.balance || 0), 0);
+            document.getElementById('totalOutstandingAmount').textContent = formatCurrency(totalOutstanding);
+
+            // Load tables
+            loadRecentTransactions(transactions, customers); // Pass loaded data
+            loadLowStockTable(products); // Pass loaded data
+
+        } catch (error) {
+            console.error('Error loading dashboard data:', error);
+            showAlert('Error', 'Failed to load dashboard data.');
+        }
+    }
+
+    function loadRecentTransactions(transactions, customers) {
+        const tbody = document.getElementById('recentTransactionsTable');
+        tbody.innerHTML = ''; // Clear previous entries
+
+        const recent = transactions
+            .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort newest first
+            .slice(0, 5); // Take top 5
+
+        if (recent.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">No recent transactions</td></tr>';
+            return;
+        }
+
+        const customerMap = new Map(customers.map(c => [c.id, c.name])); // For quick lookup
+
+        recent.forEach(t => {
+            const customerName = customerMap.get(t.customerId) || 'Walk-in';
+            const balance = parseFloat(t.total || 0) - parseFloat(t.paid || 0);
+            let statusBadge;
+            if (balance <= 0) {
+                statusBadge = '<span class="badge badge-success">Paid</span>';
+            } else if (parseFloat(t.paid || 0) > 0) {
+                statusBadge = '<span class="badge badge-warning">Partial</span>';
+            } else {
+                statusBadge = '<span class="badge badge-danger">Due</span>';
+            }
+
+            const row = `
+                <tr>
+                    <td>${formatDate(t.date)}</td>
+                    <td>${t.type === 'sell' ? 'Sale' : 'Purchase'}</td>
+                    <td>${customerName}</td>
+                    <td>${formatCurrency(t.total)}</td>
+                    <td>${statusBadge}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function loadLowStockTable(products) {
+        const tbody = document.getElementById('lowStockTable');
+        tbody.innerHTML = ''; // Clear previous entries
+
+        const lowStockItems = products.filter(p => parseInt(p.stock || 0) <= settings.lowStockThreshold);
+
+        if (lowStockItems.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">No low stock items</td></tr>';
+            return;
+        }
+
+        lowStockItems.forEach(p => {
+            const stockClass = parseInt(p.stock || 0) <= 0 ? 'text-danger' : 'text-warning';
+            const row = `
+                <tr>
+                    <td>${p.name}</td>
+                    <td>${p.sku || 'N/A'}</td>
+                    <td>${p.category || 'Uncategorized'}</td>
+                    <td><span class="${stockClass}">${p.stock}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-primary stock-in-btn non-printable" data-id="${p.id}">Stock In</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+
+        // Re-attach event listeners after updating innerHTML
+        attachEventListeners('#lowStockTable .stock-in-btn', 'click', handleStockInClick);
+    }
+
+    function handleStockInClick(event) {
+         const productId = parseInt(event.target.getAttribute('data-id'));
+         showTransactionModal('buy', [productId]); // Pass product ID in an array for potential pre-fill
+    }
+
+
+    async function loadProductsTable(filterText = '') {
+        const tbody = document.getElementById('productsTable');
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center">Loading...</td></tr>'; // Loading indicator
+
+        try {
+            let products = await getAllProducts();
+
+             // Filter products if filterText is provided
+            if (filterText) {
+                const lowerFilter = filterText.toLowerCase();
+                products = products.filter(p =>
+                    p.name.toLowerCase().includes(lowerFilter) ||
+                    (p.sku && p.sku.toLowerCase().includes(lowerFilter)) ||
+                    (p.category && p.category.toLowerCase().includes(lowerFilter))
+                );
+            }
+
+            tbody.innerHTML = ''; // Clear loading/previous entries
+
+            if (products.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center">No products found${filterText ? ' matching search' : ''}</td></tr>`;
+                return;
+            }
+
+            products.sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically by name
+
+            products.forEach(p => {
+                 const stockClass = parseInt(p.stock || 0) <= settings.lowStockThreshold ? (parseInt(p.stock || 0) <= 0 ? 'text-danger' : 'text-warning') : '';
+                const row = `
+                    <tr>
+                        <td>${p.name}</td>
+                        <td>${p.sku || 'N/A'}</td>
+                        <td>${p.category || 'Uncategorized'}</td>
+                        <td>${formatCurrency(p.costPrice)}</td>
+                        <td>${formatCurrency(p.sellingPrice)}</td>
+                        <td><span class="${stockClass}">${p.stock}</span></td>
+                        <td>
+                            <div class="action-btns non-printable">
+                                <button class="btn btn-sm btn-primary edit-product-btn" data-id="${p.id}">Edit</button>
+                                <button class="btn btn-sm btn-danger delete-product-btn" data-id="${p.id}">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            // Re-attach event listeners
+            attachEventListeners('#productsTable .edit-product-btn', 'click', handleEditProductClick);
+            attachEventListeners('#productsTable .delete-product-btn', 'click', handleDeleteProductClick);
+
+        } catch (error) {
+            console.error('Error loading products table:', error);
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center">Error loading products</td></tr>';
+        }
+    }
+
+     function handleEditProductClick(event) {
+         const productId = parseInt(event.target.getAttribute('data-id'));
+         showProductModal(productId);
+     }
+     function handleDeleteProductClick(event) {
+         const productId = parseInt(event.target.getAttribute('data-id'));
+         showDeleteConfirmModal('product', productId);
+     }
+
+
+    async function loadCustomersTable(filterText = '') {
+        const tbody = document.getElementById('customersTable');
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
+
+        try {
+            let customers = await getAllCustomers();
+
+             // Filter customers
+             if (filterText) {
+                 const lowerFilter = filterText.toLowerCase();
+                 customers = customers.filter(c =>
+                     c.name.toLowerCase().includes(lowerFilter) ||
+                     (c.phone && c.phone.toLowerCase().includes(lowerFilter)) ||
+                     (c.email && c.email.toLowerCase().includes(lowerFilter))
+                 );
+             }
+
+            tbody.innerHTML = ''; // Clear loading/previous
+
+            if (customers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center">No customers found${filterText ? ' matching search' : ''}</td></tr>`;
+                return;
+            }
+
+             customers.sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically
+
+            customers.forEach(c => {
+                const balance = parseFloat(c.balance || 0);
+                const balanceClass = balance > 0 ? 'text-danger' : (balance < 0 ? 'text-warning' : ''); // Indicate credits too?
+                const row = `
+                    <tr>
+                        <td>${c.name}</td>
+                        <td>${c.phone || 'N/A'}</td>
+                        <td>${c.email || 'N/A'}</td>
+                        <td class="${balanceClass}">${formatCurrency(balance)}</td>
+                        <td>
+                            <div class="action-btns non-printable">
+                                <button class="btn btn-sm btn-primary edit-customer-btn" data-id="${c.id}">Edit</button>
+                                <button class="btn btn-sm btn-secondary view-khata-btn" data-id="${c.id}">Khata</button>
+                                <button class="btn btn-sm btn-danger delete-customer-btn" data-id="${c.id}">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            // Re-attach listeners
+            attachEventListeners('#customersTable .edit-customer-btn', 'click', handleEditCustomerClick);
+            attachEventListeners('#customersTable .view-khata-btn', 'click', handleViewKhataClick);
+            attachEventListeners('#customersTable .delete-customer-btn', 'click', handleDeleteCustomerClick);
+
+        } catch (error) {
+            console.error('Error loading customers table:', error);
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Error loading customers</td></tr>';
+        }
+    }
+
+    function handleEditCustomerClick(event) {
+         const customerId = parseInt(event.target.getAttribute('data-id'));
+         showCustomerModal(customerId);
+    }
+    function handleViewKhataClick(event) {
+         const customerId = parseInt(event.target.getAttribute('data-id'));
+         // Navigate to Khata tab and load data
+         switchTab('khata'); // Assuming switchTab function exists
+         showCustomerKhata(customerId);
+    }
+    function handleDeleteCustomerClick(event) {
+         const customerId = parseInt(event.target.getAttribute('data-id'));
+         showDeleteConfirmModal('customer', customerId);
+    }
+
+
+    async function loadTransactionsTable(filterText = '') {
+        const tbody = document.getElementById('transactionsTable');
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center">Loading...</td></tr>';
+
+        try {
+            const [transactions, customers] = await Promise.all([
+                getAllTransactions(),
+                getAllCustomers()
+            ]);
+
+            const customerMap = new Map(customers.map(c => [c.id, c.name]));
+            let filteredTransactions = transactions;
+
+             // Filter transactions
+             if (filterText) {
+                 const lowerFilter = filterText.toLowerCase();
+                 filteredTransactions = transactions.filter(t => {
+                     const customerName = customerMap.get(t.customerId) || 'walk-in';
+                     return (
+                         t.id.toString().includes(lowerFilter) || // Search by ID?
+                         formatDate(t.date).includes(lowerFilter) ||
+                         t.type.toLowerCase().includes(lowerFilter) ||
+                         customerName.toLowerCase().includes(lowerFilter) ||
+                         formatCurrency(t.total).includes(lowerFilter)
+                         // Maybe search item names too? (more complex)
+                     );
+                 });
+             }
+
+            tbody.innerHTML = ''; // Clear loading/previous
+
+            if (filteredTransactions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center">No transactions found${filterText ? ' matching search' : ''}</td></tr>`;
+                return;
+            }
+
+            // Sort newest first
+            filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            filteredTransactions.forEach(t => {
+                const customerName = customerMap.get(t.customerId) || 'Walk-in';
+                const itemCount = t.items ? t.items.length : 0;
+                const total = parseFloat(t.total || 0);
+                const paid = parseFloat(t.paid || 0);
+                const balance = total - paid;
+                const balanceClass = balance > 0.005 ? 'text-danger' : ''; // Handle floating point slightly
+
+                const row = `
+                    <tr>
+                        <td>${formatDate(t.date)}</td>
+                        <td>${t.type === 'sell' ? 'Sale' : 'Purchase'}</td>
+                        <td>${customerName}</td>
+                        <td>${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
+                        <td>${formatCurrency(total)}</td>
+                        <td>${formatCurrency(paid)}</td>
+                        <td class="${balanceClass}">${formatCurrency(balance)}</td>
+                        <td>
+                            <div class="action-btns non-printable">
+                                <button class="btn btn-sm btn-primary view-transaction-btn" data-id="${t.id}">View</button>
+                                ${t.type === 'sell' || t.type === 'buy' ? `<button class="btn btn-sm btn-danger delete-transaction-btn" data-id="${t.id}">Delete</button>` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            // Re-attach listeners
+            attachEventListeners('#transactionsTable .view-transaction-btn', 'click', handleViewTransactionClick);
+            attachEventListeners('#transactionsTable .delete-transaction-btn', 'click', handleDeleteTransactionClick);
+
+        } catch (error) {
+            console.error('Error loading transactions table:', error);
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center">Error loading transactions</td></tr>';
+        }
+    }
+
+     function handleViewTransactionClick(event) {
+         const transactionId = parseInt(event.target.getAttribute('data-id'));
+         showViewTransactionModal(transactionId);
+     }
+     function handleDeleteTransactionClick(event) {
+         const transactionId = parseInt(event.target.getAttribute('data-id'));
+         showDeleteConfirmModal('transaction', transactionId);
+     }
+
+
+    async function loadCustomerDropdowns(selectElementIds, includeWalkIn = false, selectedValue = null) {
+        try {
+            const customers = await getAllCustomers();
+            customers.sort((a,b)=> a.name.localeCompare(b.name)); // Sort alphabetically
+
+            selectElementIds.forEach(id => {
+                const dropdown = document.getElementById(id);
+                if (!dropdown) return;
+
+                // Store current value if it exists and is not the placeholder
+                const currentValue = (dropdown.value && dropdown.value !== "") ? dropdown.value : selectedValue;
+
+                // Clear existing options except the placeholder first option
+                const placeholder = dropdown.options[0];
+                dropdown.innerHTML = '';
+                dropdown.appendChild(placeholder);
+
+
+                if (includeWalkIn) {
+                    const walkInOption = document.createElement('option');
+                    walkInOption.value = ""; // Or a specific ID like 'walk-in' if needed
+                    walkInOption.textContent = "Walk-in Customer";
+                    dropdown.appendChild(walkInOption);
+                }
+
+                customers.forEach(customer => {
+                    const option = document.createElement('option');
+                    option.value = customer.id;
+                    option.textContent = `${customer.name}${customer.phone ? ` (${customer.phone})` : ''}`;
+                    dropdown.appendChild(option);
+                });
+
+                 // Try to restore the selected value
+                 if (currentValue !== null && dropdown.querySelector(`option[value="${currentValue}"]`)) {
+                     dropdown.value = currentValue;
+                 } else if(selectedValue !== null && dropdown.querySelector(`option[value="${selectedValue}"]`)){
+                    dropdown.value = selectedValue;
+                 } else {
+                    dropdown.selectedIndex = 0; // Reset to placeholder if previous value is gone
+                 }
+
+            });
+        } catch (error) {
+            console.error('Error loading customers into dropdowns:', error);
+            // Optionally show an alert
+        }
+    }
+
+    async function loadProductDropdowns(selectElementIds, selectedValue = null) {
+        try {
+            const products = await getAllProducts();
+             products.sort((a,b)=> a.name.localeCompare(b.name)); // Sort alphabetically
+
+            selectElementIds.forEach(id => {
+                const dropdown = document.getElementById(id);
+                if (!dropdown) return;
+
+                const currentValue = dropdown.value && dropdown.value !== "" ? dropdown.value : selectedValue;
+
+                // Clear existing options except the placeholder
+                const placeholder = dropdown.options[0];
+                dropdown.innerHTML = '';
+                 if(placeholder) dropdown.appendChild(placeholder); // Keep placeholder if exists
+
+                products.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product.id;
+                     // Include price and stock for context
+                     option.textContent = `${product.name} (${formatCurrency(product.sellingPrice)}) - Stock: ${product.stock}`;
+                     option.dataset.price = product.sellingPrice; // Store price in data attribute
+                     option.dataset.stock = product.stock; // Store stock in data attribute
+                     option.dataset.cost = product.costPrice; // Store cost price
+                    dropdown.appendChild(option);
+                });
+
+                 // Restore selected value
+                 if (currentValue !== null && dropdown.querySelector(`option[value="${currentValue}"]`)) {
+                     dropdown.value = currentValue;
+                 } else {
+                     if(placeholder) dropdown.selectedIndex = 0;
+                 }
+            });
+        } catch (error) {
+            console.error('Error loading products into dropdowns:', error);
+        }
+    }
+
+
+    // --- Khata ---
+    async function showCustomerKhata(customerId) {
+        const customerDetailsDiv = document.getElementById('customerKhataDetails');
+        const customerSelect = document.getElementById('khataCustomerSelect');
+
+        if (!customerId) {
+            customerDetailsDiv.classList.add('hidden');
+            customerSelect.value = ""; // Ensure dropdown reflects no selection
+            return;
+        }
+
+        // Ensure the dropdown is updated and the correct customer is selected
+        await loadCustomerDropdowns(['khataCustomerSelect'], false, customerId);
+        // customerSelect.value = customerId; // loadCustomerDropdowns should handle this
+
+        try {
+            const customer = await getCustomer(customerId);
+            if (!customer) {
+                showAlert('Error', 'Customer not found.');
+                customerDetailsDiv.classList.add('hidden');
+                return;
+            }
+
+            // Update customer details display
+            document.getElementById('khataCustomerName').textContent = customer.name;
+            document.getElementById('khataCustomerContact').textContent = `Phone: ${customer.phone || 'N/A'} | Email: ${customer.email || 'N/A'}`;
+            const balance = parseFloat(customer.balance || 0);
+            const balanceEl = document.getElementById('khataOutstandingBalance');
+            balanceEl.textContent = formatCurrency(balance);
+            balanceEl.className = balance > 0 ? 'text-danger' : (balance < 0 ? 'text-success' : ''); // Indicate credit as success?
+
+
+            // Load transactions for this customer
+            await loadKhataTransactionsTable(customerId);
+
+            customerDetailsDiv.classList.remove('hidden');
+
+        } catch (error) {
+            console.error('Error loading customer khata:', error);
+            showAlert('Error', `Failed to load khata details: ${error.message}`);
+            customerDetailsDiv.classList.add('hidden');
+        }
+    }
+
+    async function loadKhataTransactionsTable(customerId) {
+        const tbody = document.getElementById('khataTransactionsTable');
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
+
+        try {
+            const [transactions, payments] = await Promise.all([
+                getTransactionsByCustomer(customerId),
+                getPaymentsByCustomer(customerId)
+            ]);
+
+            // Combine sales transactions (affecting balance) and payments
+            const khataEntries = [
+                ...transactions
+                    .filter(t => t.type === 'sell') // Only sales affect khata balance directly
+                    .map(t => ({
+                        date: t.date,
+                        type: 'Sale',
+                        description: `Sale (ID: ${t.id}) - ${t.items.length} item(s)`,
+                        debit: parseFloat(t.total || 0) - parseFloat(t.paid || 0), // Amount added to balance
+                        credit: 0,
+                        sortDate: new Date(t.date)
+                    })),
+                ...payments.map(p => ({
+                    date: p.date,
+                    type: 'Payment',
+                    description: `Payment Received ${p.notes ? '- ' + p.notes : ''}`,
+                    debit: 0,
+                    credit: parseFloat(p.amount || 0), // Amount reducing balance
+                    sortDate: new Date(p.date)
+                }))
+            ];
+
+            // Sort entries chronologically
+            khataEntries.sort((a, b) => a.sortDate - b.sortDate);
+
+             tbody.innerHTML = ''; // Clear loading
+
+            if (khataEntries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">No transactions or payments found for this customer.</td></tr>';
+                return;
+            }
+
+            let runningBalance = 0; // Start from 0 and calculate based on entries
+            khataEntries.forEach(entry => {
+                 runningBalance += entry.debit - entry.credit;
+                 const balanceClass = runningBalance > 0.005 ? 'text-danger' : '';
+
+                const row = `
+                    <tr>
+                        <td>${formatDate(entry.date)}</td>
+                        <td>${entry.description}</td>
+                        <td>${entry.debit > 0 ? formatCurrency(entry.debit) : ''}</td>
+                        <td>${entry.credit > 0 ? formatCurrency(entry.credit) : ''}</td>
+                        <td class="${balanceClass}">${formatCurrency(runningBalance)}</td>
+                    </tr>
+                `;
+                 tbody.innerHTML += row;
+            });
+
+             // Final check against customer's stored balance (should match last running balance)
+             const customer = await getCustomer(customerId);
+             const storedBalance = parseFloat(customer.balance || 0);
+             if (Math.abs(runningBalance - storedBalance) > 0.01) { // Allow for small floating point diffs
+                 console.warn(`Khata running balance (${runningBalance}) does not match stored customer balance (${storedBalance}) for customer ${customerId}. Reconciliation might be needed.`);
+                 // Optionally display a warning in the UI
+             }
+
+
+        } catch (error) {
+            console.error('Error loading khata transactions:', error);
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Error loading transaction history.</td></tr>';
+        }
+    }
+
+
+    // --- Modal Handling ---
+
+    // Generic Modal Opener/Closer
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('show');
+            // Focus on the first input or button in the modal for accessibility
+            const focusable = modal.querySelector('input, select, textarea, button');
+            if(focusable) focusable.focus();
+        } else {
+            console.error(`Modal with ID ${modalId} not found.`);
+        }
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('show');
+            // Optionally reset form inside modal when closed
+            const form = modal.querySelector('form');
+            if (form) {
+                // form.reset(); // Be careful with reset, might clear intended defaults
+            }
+        } else {
+             console.error(`Modal with ID ${modalId} not found.`);
+        }
+    }
+
+    // Product Modal
+    async function showProductModal(productId = null) {
+        const form = document.getElementById('productForm');
+        form.reset(); // Reset form fields
+        document.getElementById('productId').value = ''; // Clear hidden ID
+
+        const title = document.getElementById('productModalTitle');
+        const stockInput = document.getElementById('productStock');
+        const stockLabel = stockInput.previousElementSibling; // Assumes label is right before input
+
+
+        if (productId) {
+            // Edit Mode
+            title.textContent = 'Edit Product';
+            stockInput.readOnly = true; // Stock edited via transactions
+            stockInput.parentElement.style.display = 'block'; // Show stock field
+            stockLabel.textContent = 'Current Stock (Read-only)';
+            try {
+                const product = await getProduct(productId);
+                if (!product) {
+                    showAlert('Error', 'Product not found.');
+                    return;
+                }
+                document.getElementById('productId').value = product.id;
+                document.getElementById('productName').value = product.name;
+                document.getElementById('productSku').value = product.sku || '';
+                document.getElementById('productCategory').value = product.category || '';
+                document.getElementById('productStock').value = product.stock || 0;
+                document.getElementById('productCostPrice').value = product.costPrice;
+                document.getElementById('productSellingPrice').value = product.sellingPrice;
+                openModal('productModal');
+            } catch (error) {
+                showAlert('Error', `Failed to load product: ${error.message}`);
+            }
+        } else {
+            // Add Mode
+            title.textContent = 'Add New Product';
+            stockInput.readOnly = false;
+            stockInput.parentElement.style.display = 'block'; // Show stock field for initial entry
+            stockLabel.textContent = 'Initial Stock';
+             document.getElementById('productStock').value = 0; // Default initial stock
+            openModal('productModal');
+        }
+    }
+
+    async function saveProduct() {
+        const form = document.getElementById('productForm');
+        if (!form.checkValidity()) {
+            showAlert('Validation Error', 'Please fill in all required fields correctly.');
+            form.reportValidity(); // Show native browser validation UI
+            return;
+        }
+
+        const productId = document.getElementById('productId').value;
+        const productData = {
+            name: document.getElementById('productName').value.trim(),
+            sku: document.getElementById('productSku').value.trim() || null, // Store as null if empty
+            category: document.getElementById('productCategory').value.trim() || null,
+            costPrice: parseFloat(document.getElementById('productCostPrice').value),
+            sellingPrice: parseFloat(document.getElementById('productSellingPrice').value),
+            // Stock is only set initially, otherwise managed by transactions
+            stock: productId ? undefined : (parseInt(document.getElementById('productStock').value) || 0)
+        };
+
+        // Add ID only if editing
+        if (productId) {
+            productData.id = parseInt(productId);
+             // Fetch existing stock if editing, as the input is read-only
+            const existingProduct = await getProduct(productData.id);
+             if (existingProduct) productData.stock = existingProduct.stock;
+        } else {
+            // Ensure initial stock is set for new products
+             productData.stock = parseInt(document.getElementById('productStock').value) || 0;
+        }
+
+         // Basic validation
+         if (!productData.name || productData.costPrice < 0 || productData.sellingPrice < 0) {
+             showAlert('Validation Error', 'Please provide a product name and non-negative prices.');
+             return;
+         }
+
+
+        try {
+             // Check for duplicate SKU if SKU is provided and it's a new product or SKU changed
+             if (productData.sku) {
+                 const products = await getAllProducts();
+                 const duplicate = products.find(p => p.sku === productData.sku && p.id !== productData.id);
+                 if (duplicate) {
+                     showAlert('Error', `SKU "${productData.sku}" is already used by product "${duplicate.name}". SKUs must be unique.`);
+                     return;
+                 }
+             }
+
+            await addProduct(productData); // addProduct uses 'put', handles add/update
+            showAlert('Success', `Product ${productId ? 'updated' : 'added'} successfully!`);
+            closeModal('productModal');
+            loadProductsTable(); // Refresh table
+            loadDashboardData(); // Refresh counts/low stock
+            loadProductDropdowns(['reportProductSelect']); // Refresh report dropdown
+            // Refresh dropdowns in transaction modal if needed
+            // loadProductDropdowns(document.querySelectorAll('#transactionItemsContainer select.product-select').map(el => el.id));
+        } catch (error) {
+            console.error("Error saving product:", error);
+            showAlert('Error', `Failed to save product: ${error.message}`);
+        }
+    }
+
+
+     // Customer Modal
+    async function showCustomerModal(customerId = null) {
+        const form = document.getElementById('customerForm');
+        form.reset();
+        document.getElementById('customerId').value = '';
+        const title = document.getElementById('customerModalTitle');
+
+        if (customerId) {
+            // Edit Mode
+            title.textContent = 'Edit Customer';
+            try {
+                const customer = await getCustomer(customerId);
+                if (!customer) {
+                    showAlert('Error', 'Customer not found.');
+                    return;
+                }
+                document.getElementById('customerId').value = customer.id;
+                document.getElementById('customerName').value = customer.name;
+                document.getElementById('customerPhone').value = customer.phone || '';
+                document.getElementById('customerEmail').value = customer.email || '';
+                document.getElementById('customerAddress').value = customer.address || '';
+                document.getElementById('customerNotes').value = customer.notes || '';
+                 // Balance is not directly editable here
+                openModal('customerModal');
+            } catch (error) {
+                showAlert('Error', `Failed to load customer: ${error.message}`);
+            }
+        } else {
+            // Add Mode
+            title.textContent = 'Add New Customer';
+            openModal('customerModal');
+        }
+    }
+
+    async function saveCustomer() {
+        const form = document.getElementById('customerForm');
+        if (!form.checkValidity()) {
+            showAlert('Validation Error', 'Please provide a customer name.');
+             form.reportValidity();
+            return;
+        }
+
+        const customerId = document.getElementById('customerId').value;
+        const customerData = {
+            name: document.getElementById('customerName').value.trim(),
+            phone: document.getElementById('customerPhone').value.trim() || null,
+            email: document.getElementById('customerEmail').value.trim() || null,
+            address: document.getElementById('customerAddress').value.trim() || null,
+            notes: document.getElementById('customerNotes').value.trim() || null,
+            // Balance is managed via transactions/payments, initialize if new
+            balance: undefined // Will be handled by addCustomer/saveData if new
+        };
+
+        if (customerId) {
+            customerData.id = parseInt(customerId);
+             // Preserve existing balance when updating
+             const existingCustomer = await getCustomer(customerData.id);
+             if (existingCustomer) customerData.balance = existingCustomer.balance;
+        } else {
+            customerData.balance = 0; // Initialize balance for new customers
+        }
+
+        try {
+            await addCustomer(customerData); // addCustomer uses 'put'
+            showAlert('Success', `Customer ${customerId ? 'updated' : 'added'} successfully!`);
+            closeModal('customerModal');
+            loadCustomersTable(); // Refresh table
+            loadDashboardData(); // Refresh count/outstanding
+            // Refresh all customer dropdowns
+            loadCustomerDropdowns([
+                'transactionCustomer',
+                'khataCustomerSelect',
+                'paymentCustomer',
+                'reportCustomerSelect'
+            ], true); // Include walk-in for transaction form
+        } catch (error) {
+            console.error("Error saving customer:", error);
+            showAlert('Error', `Failed to save customer: ${error.message}`);
+        }
+    }
+
+     // Transaction Modal
+    let transactionItemCounter = 0; // To generate unique IDs for item rows
+
+    async function showTransactionModal(type, prefillProductIds = []) {
+        const modal = document.getElementById('transactionModal');
+        const title = document.getElementById('transactionModalTitle');
+        const form = document.getElementById('transactionForm');
+        form.reset(); // Reset the form
+        document.getElementById('transactionId').value = ''; // Clear potential edit ID
+        document.getElementById('transactionType').value = type;
+        document.getElementById('transactionItemsContainer').innerHTML = ''; // Clear items
+        transactionItemCounter = 0; // Reset counter
+
+        // Set modal title and configure fields based on type
+        const customerSelectGroup = document.getElementById('customerSelectGroup');
+        const paymentSection = document.getElementById('paymentSection');
+         const balanceSection = document.getElementById('balanceSection');
+
+
+        if (type === 'buy') {
+            title.textContent = 'New Purchase (Stock In)';
+            customerSelectGroup.style.display = 'none'; // Hide customer for purchases
+            paymentSection.style.display = 'none'; // Hide payment for purchases (assume paid)
+             balanceSection.style.display = 'none';
+        } else { // 'sell'
+            title.textContent = 'New Sale (Stock Out)';
+            customerSelectGroup.style.display = 'block';
+            paymentSection.style.display = 'block'; // Show payment fields for sales
+             balanceSection.style.display = 'block';
+        }
+
+        // Set default date
+        setDefaultDateInputs();
+
+        // Load customers, wait for it to finish
+        await loadCustomerDropdowns(['transactionCustomer'], true); // Include walk-in
+
+        // Add initial item row(s) and load products, potentially pre-selecting
+         if (prefillProductIds && prefillProductIds.length > 0) {
+             for (const productId of prefillProductIds) {
+                 await addTransactionItemRow(productId);
+             }
+         } else {
+             await addTransactionItemRow(); // Add one empty row
+         }
+
+        updateTransactionTotals(); // Calculate initial totals (should be 0)
+        openModal('transactionModal');
+    }
+
+    async function addTransactionItemRow(selectedProductId = null) {
+        transactionItemCounter++;
+        const itemId = `item-${transactionItemCounter}`;
+        const itemRow = document.createElement('div');
+        itemRow.classList.add('transaction-item', 'form-row');
+        itemRow.id = itemId;
+
+        // Determine price field label based on transaction type
+        const priceLabel = document.getElementById('transactionType').value === 'buy' ? 'Cost Price' : 'Selling Price';
+
+        itemRow.innerHTML = `
+            <div class="form-group col-md-5">
+                <label class="form-label visually-hidden">Product</label> <select class="form-control product-select" id="product-${itemId}" required>
+                    <option value="">-- Select Product --</option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                 <label class="form-label visually-hidden">Quantity</label>
+                <input type="number" class="form-control item-quantity" id="quantity-${itemId}" placeholder="Qty" min="1" value="1" required>
+            </div>
+            <div class="form-group col-md-2">
+                 <label class="form-label visually-hidden">${priceLabel}</label>
+                <input type="number" class="form-control item-price" id="price-${itemId}" placeholder="Price" min="0" step="0.01" required>
+            </div>
+            <div class="form-group col-md-2">
+                 <label class="form-label visually-hidden">Total</label>
+                <input type="text" class="form-control item-total" id="total-${itemId}" placeholder="Total" readonly>
+            </div>
+            <div class="form-group col-md-1">
+                 <label class="form-label visually-hidden">Remove</label>
+                <button type="button" class="btn btn-sm btn-danger remove-item-btn" data-itemid="${itemId}">×</button>
+            </div>
+        `;
+
+        document.getElementById('transactionItemsContainer').appendChild(itemRow);
+
+        // Load products into the new select dropdown
+        const selectElementId = `product-${itemId}`;
+        await loadProductDropdowns([selectElementId], selectedProductId);
+
+        // If a product was pre-selected, trigger the change event to populate price/stock
+         if (selectedProductId) {
+             const selectElement = document.getElementById(selectElementId);
+             if(selectElement.value == selectedProductId){ // Check if loading finished and value is set
+                handleProductSelectionChange({ target: selectElement }); // Simulate change event
+             }
+         }
+
+
+        // Add event listeners for the new row elements
+        document.getElementById(selectElementId).addEventListener('change', handleProductSelectionChange);
+        document.getElementById(`quantity-${itemId}`).addEventListener('input', updateItemTotal);
+        document.getElementById(`price-${itemId}`).addEventListener('input', updateItemTotal);
+        itemRow.querySelector('.remove-item-btn').addEventListener('click', removeTransactionItemRow);
+    }
+
+    function removeTransactionItemRow(event) {
+        const button = event.target;
+        const itemId = button.getAttribute('data-itemid');
+        const itemRow = document.getElementById(itemId);
+        if (itemRow) {
+            itemRow.remove();
+            updateTransactionTotals(); // Recalculate after removing item
+        }
+    }
+
+    function handleProductSelectionChange(event) {
+        const selectElement = event.target;
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const itemId = selectElement.id.split('-')[1] + '-' + selectElement.id.split('-')[2]; // Reconstruct item-X id
+
+        const priceInput = document.getElementById(`price-${itemId}`);
+        const quantityInput = document.getElementById(`quantity-${itemId}`);
+        const transactionType = document.getElementById('transactionType').value;
+
+        if (selectedOption && selectedOption.value) {
+            const price = transactionType === 'buy'
+                ? selectedOption.dataset.cost || 0  // Use cost price for buy
+                : selectedOption.dataset.price || 0; // Use selling price for sell
+            const stock = selectedOption.dataset.stock || 0;
+
+            priceInput.value = parseFloat(price).toFixed(2);
+
+             // Update quantity max based on stock for 'sell' transactions
+             if(transactionType === 'sell'){
+                quantityInput.max = stock;
+                if(parseInt(quantityInput.value) > parseInt(stock)) {
+                    quantityInput.value = stock; // Adjust quantity if it exceeds stock
+                    showAlert('Warning', `Quantity adjusted to available stock (${stock}) for ${selectedOption.textContent.split(' (')[0]}`);
+                }
+             } else {
+                 quantityInput.removeAttribute('max'); // No max for purchases
+             }
+
+
+        } else {
+            priceInput.value = ''; // Clear price if no product selected
+            quantityInput.removeAttribute('max');
+        }
+
+        updateItemTotal({ target: selectElement }); // Trigger total calculation for the row
+    }
+
+    function updateItemTotal(event) {
+        // Find the row corresponding to the input that triggered the event
+        const inputElement = event.target;
+        const itemRow = inputElement.closest('.transaction-item');
+        if (!itemRow) return;
+
+        const itemId = itemRow.id;
+        const quantityInput = document.getElementById(`quantity-${itemId}`);
+        const priceInput = document.getElementById(`price-${itemId}`);
+        const totalInput = document.getElementById(`total-${itemId}`);
+
+        const quantity = parseInt(quantityInput.value) || 0;
+        const price = parseFloat(priceInput.value) || 0;
+
+        // Basic validation for sell transactions
+        if (document.getElementById('transactionType').value === 'sell') {
+            const maxStock = parseInt(quantityInput.max);
+            if (!isNaN(maxStock) && quantity > maxStock) {
+                quantityInput.value = maxStock; // Don't allow exceeding stock
+                showAlert('Warning', `Quantity cannot exceed available stock (${maxStock})`);
+                 // Re-calculate total with maxStock if correction happens
+                 totalInput.value = formatCurrency(maxStock * price);
+                 updateTransactionTotals(); // Update grand total
+                 return; // Exit early
+            }
+        }
+
+
+        const total = quantity * price;
+        totalInput.value = formatCurrency(total);
+
+        updateTransactionTotals(); // Update grand total whenever an item total changes
+    }
+
+    function updateTransactionTotals() {
+        let subtotal = 0;
+        const itemTotals = document.querySelectorAll('.transaction-item .item-total');
+        itemTotals.forEach(input => {
+            // Parse formatted currency back to number
+            const valueString = input.value.replace(settings.currencySymbol, '').replace(/,/g, '');
+            subtotal += parseFloat(valueString) || 0;
+        });
+
+        const transactionType = document.getElementById('transactionType').value;
+        const paidInput = document.getElementById('transactionPaid');
+        const totalDisplay = document.getElementById('transactionTotal');
+        const subtotalDisplay = document.getElementById('transactionSubtotal');
+        const balanceDisplay = document.getElementById('transactionBalance');
+
+        subtotalDisplay.textContent = formatCurrency(subtotal);
+        totalDisplay.textContent = formatCurrency(subtotal); // For now, total = subtotal (no tax/discount)
+
+        if (transactionType === 'buy') {
+            // Purchases: Paid and Balance are not relevant in this simple model
+            paidInput.value = subtotal.toFixed(2); // Assume purchase is fully paid
+            balanceDisplay.textContent = formatCurrency(0);
+        } else {
+            // Sales: Calculate balance based on amount paid
+            const paidAmount = parseFloat(paidInput.value) || 0;
+            const balance = subtotal - paidAmount;
+            balanceDisplay.textContent = formatCurrency(balance > 0 ? balance : 0); // Show 0 if overpaid
+             // Add class if balance > 0
+             if (balance > 0.005) { // Use small tolerance
+                 balanceDisplay.classList.add('text-danger');
+             } else {
+                 balanceDisplay.classList.remove('text-danger');
+             }
+        }
+    }
+
+    async function saveTransaction() {
+        const form = document.getElementById('transactionForm');
+        if (!form.checkValidity()) {
+            showAlert('Validation Error', 'Please fill in all required fields, including selecting products and entering quantities/prices.');
+            form.reportValidity();
+            return;
+        }
+
+        const transactionId = document.getElementById('transactionId').value; // For potential edits (not implemented yet)
+        const transactionType = document.getElementById('transactionType').value;
+        const customerId = document.getElementById('transactionCustomer').value ? parseInt(document.getElementById('transactionCustomer').value) : null;
+
+        const items = [];
+        const itemRows = document.querySelectorAll('.transaction-item');
+
+        if (itemRows.length === 0) {
+            showAlert('Validation Error', 'Please add at least one item to the transaction.');
+            return;
+        }
+
+        let formIsValid = true; // Flag for item validation
+        itemRows.forEach(row => {
+            const itemId = row.id;
+            const productSelect = document.getElementById(`product-${itemId}`);
+            const quantityInput = document.getElementById(`quantity-${itemId}`);
+            const priceInput = document.getElementById(`price-${itemId}`);
+
+            const productId = productSelect.value ? parseInt(productSelect.value) : null;
+            const quantity = parseInt(quantityInput.value);
+            const price = parseFloat(priceInput.value);
+
+            if (!productId || isNaN(quantity) || quantity <= 0 || isNaN(price) || price < 0) {
+                formIsValid = false; // Mark form as invalid if any item has issues
+            }
+
+             // Check stock for sales transaction
+            if (transactionType === 'sell' && productId) {
+                 const selectedOption = productSelect.options[productSelect.selectedIndex];
+                 const availableStock = selectedOption ? parseInt(selectedOption.dataset.stock) : 0;
+                 if(quantity > availableStock) {
+                    showAlert('Validation Error', `Insufficient stock for ${selectedOption.textContent.split(' (')[0]}. Available: ${availableStock}, Requested: ${quantity}.`);
+                    quantityInput.focus();
+                    formIsValid = false;
+                 }
+            }
+
+
+            if (formIsValid) {
+                items.push({
+                    productId: productId,
+                    quantity: quantity,
+                    price: price, // Price per unit at the time of transaction
+                    total: quantity * price
+                });
+            }
+        });
+
+        if (!formIsValid) {
+             showAlert('Validation Error', 'Please check all transaction items. Ensure a product is selected and quantity/price are valid.');
+             return;
+        }
+
+
+        // Calculate total and paid amount
+        const total = items.reduce((sum, item) => sum + item.total, 0);
+        let paid = 0;
+        if (transactionType === 'sell') {
+            paid = parseFloat(document.getElementById('transactionPaid').value) || 0;
+        } else { // Assume purchases are fully 'paid' in terms of cost
+            paid = total;
+        }
+
+        const transactionData = {
+            date: document.getElementById('transactionDate').value,
+            type: transactionType,
+            customerId: customerId, // Null for purchases or walk-in sales
+            items: items,
+            total: total,
+            paid: paid,
+            // balance: total - paid // Can be calculated, not necessarily stored
+            // notes: document.getElementById('transactionNotes').value // Add notes field if needed
+        };
+
+        if (transactionId) { // If editing (not fully implemented)
+            transactionData.id = parseInt(transactionId);
+        }
+
+        try {
+            await addTransaction(transactionData);
+            showAlert('Success', `Transaction (Type: ${transactionType}) saved successfully!`);
+            closeModal('transactionModal');
+            // Refresh relevant data
+            loadTransactionsTable();
+            loadDashboardData();
+             if (transactionType === 'sell' && customerId) {
+                loadCustomersTable(); // Update customer balance display
+                if (document.getElementById('khataCustomerSelect').value == customerId) {
+                    showCustomerKhata(customerId); // Refresh khata if viewing this customer
+                }
+             }
+             loadProductsTable(); // Update stock display in products table
+             // Refresh product dropdowns stock count
+             loadProductDropdowns(Array.from(document.querySelectorAll('.product-select')).map(el => el.id));
+        } catch (error) {
+            console.error("Error saving transaction:", error);
+            // Error shown by addTransaction function
+            // showAlert('Error', `Failed to save transaction: ${error.message}`);
+        }
+    }
+
+
+    // Payment Modal
+    async function showPaymentModal(customerId = null) {
+        const form = document.getElementById('paymentForm');
+        form.reset();
+         setDefaultDateInputs();
+
+        await loadCustomerDropdowns(['paymentCustomer'], false, customerId); // No walk-in for payments
+
+        // If customer is pre-selected, fetch their balance
+        if (customerId) {
+            document.getElementById('paymentCustomer').value = customerId;
+            await updatePaymentOutstandingBalance(customerId);
+        } else {
+             document.getElementById('paymentOutstanding').value = ''; // Clear if no customer
+        }
+
+        openModal('paymentModal');
+    }
+
+     async function updatePaymentOutstandingBalance(customerId) {
+        const outstandingInput = document.getElementById('paymentOutstanding');
+        if (customerId) {
+             try {
+                 const customer = await getCustomer(parseInt(customerId));
+                 outstandingInput.value = customer ? formatCurrency(customer.balance || 0) : 'N/A';
+             } catch {
+                 outstandingInput.value = 'Error';
+             }
+        } else {
+             outstandingInput.value = '';
+        }
+     }
+
+
+    async function savePayment() {
+        const form = document.getElementById('paymentForm');
+         if (!form.checkValidity()) {
+             showAlert('Validation Error', 'Please select a customer and enter a valid payment amount.');
+             form.reportValidity();
+             return;
+         }
+
+         const customerId = parseInt(document.getElementById('paymentCustomer').value);
+         const amount = parseFloat(document.getElementById('paymentAmount').value);
+
+         if (!customerId || isNaN(amount) || amount <= 0) {
+             showAlert('Validation Error', 'Invalid customer or payment amount.');
+             return;
+         }
+
+         const paymentData = {
+             date: document.getElementById('paymentDate').value,
+             customerId: customerId,
+             amount: amount,
+             notes: document.getElementById('paymentNotes').value.trim() || null
+         };
+
+         try {
+             await addPayment(paymentData);
+             showAlert('Success', 'Payment recorded successfully!');
+             closeModal('paymentModal');
+             // Refresh data
+             loadCustomersTable(); // Update balances
+             loadDashboardData(); // Update outstanding total
+             // If viewing the affected customer's khata, refresh it
+             if (document.getElementById('khata').classList.contains('active') && document.getElementById('khataCustomerSelect').value == customerId) {
+                 showCustomerKhata(customerId);
+             }
+         } catch (error) {
+             console.error("Error saving payment:", error);
+             // Error likely shown by addPayment
+             // showAlert('Error', `Failed to save payment: ${error.message}`);
+         }
+
+    }
+
+     // View Transaction Modal
+    async function showViewTransactionModal(transactionId) {
+        const modalBody = document.getElementById('viewTransactionBody');
+        modalBody.innerHTML = '<div class="spinner"></div>'; // Show loading spinner
+        openModal('viewTransactionModal');
+
+        try {
+            const transaction = await getTransaction(transactionId);
+            if (!transaction) {
+                modalBody.innerHTML = '<p class="text-danger">Transaction not found.</p>';
+                return;
+            }
+
+            let customerName = 'Walk-in Customer';
+            let customerDetails = '';
+            if (transaction.customerId) {
+                const customer = await getCustomer(transaction.customerId);
+                if (customer) {
+                    customerName = customer.name;
+                    customerDetails = `
+                        <p><strong>Phone:</strong> ${customer.phone || 'N/A'}</p>
+                        <p><strong>Email:</strong> ${customer.email || 'N/A'}</p>
+                    `;
+                }
+            }
+
+            // Get product names for items
+             const productIds = transaction.items.map(item => item.productId);
+             const products = await Promise.all(productIds.map(id => getProduct(id)));
+             const productMap = new Map(products.filter(p=>p).map(p => [p.id, p.name]));
+
+
+             let itemsHtml = `
+                 <table class="table mt-3">
+                     <thead>
+                         <tr>
+                             <th>Product</th>
+                             <th>Quantity</th>
+                             <th>Unit Price</th>
+                             <th>Total</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+             `;
+             transaction.items.forEach(item => {
+                const productName = productMap.get(item.productId) || `Product ID: ${item.productId}`;
+                 itemsHtml += `
+                     <tr>
+                         <td>${productName}</td>
+                         <td>${item.quantity}</td>
+                         <td>${formatCurrency(item.price)}</td>
+                         <td>${formatCurrency(item.total)}</td>
+                     </tr>
+                 `;
+             });
+             itemsHtml += '</tbody></table>';
+
+            const balance = parseFloat(transaction.total) - parseFloat(transaction.paid);
+            const balanceClass = balance > 0.005 ? 'text-danger' : '';
+
+             // --- Print Header ---
+            const printHeader = `
+                <div class="print-header hidden">
+                    <h2 class="print-business-name">${settings.businessName}</h2>
+                    <p class="print-business-address">${settings.businessAddress || ''}</p>
+                    <p class="print-business-contact">Phone: ${settings.businessPhone || 'N/A'} | Email: ${settings.businessEmail || 'N/A'}</p>
+                    <h3 class="print-title">Transaction Receipt</h3>
+                 </div>
+             `;
+
+            modalBody.innerHTML = `
+                ${printHeader}
+                 <div class="mb-3">
+                     <h4>Transaction Details</h4>
+                     <p><strong>ID:</strong> ${transaction.id}</p>
+                     <p><strong>Date:</strong> ${formatDate(transaction.date)}</p>
+                     <p><strong>Type:</strong> ${transaction.type === 'sell' ? 'Sale' : 'Purchase'}</p>
+                 </div>
+                 <div class="mb-3">
+                     <h4>Customer</h4>
+                     <p><strong>Name:</strong> ${customerName}</p>
+                     ${customerDetails}
+                 </div>
+                 <div class="mb-3">
+                     <h4>Items</h4>
+                     ${itemsHtml}
+                 </div>
+                 <div class="transaction-totals">
+                     <div class="transaction-total-row">
+                         <div>Total:</div>
+                         <div>${formatCurrency(transaction.total)}</div>
+                     </div>
+                     <div class="transaction-total-row">
+                         <div>Paid:</div>
+                         <div>${formatCurrency(transaction.paid)}</div>
+                     </div>
+                      <div class="transaction-total-row transaction-grand-total">
+                         <div>Balance Due:</div>
+                         <div class="${balanceClass}">${formatCurrency(balance)}</div>
+                     </div>
+                 </div>
+                 <div class="print-footer hidden">
+                     <p>Thank you for your business!</p>
+                     <p>Generated on: ${new Date().toLocaleString()}</p>
+                 </div>
+            `;
+
+             // Set up print button
+             document.getElementById('printTransactionBtn').onclick = () => printElement(modalBody);
+
+
+        } catch (error) {
+            console.error("Error loading transaction details:", error);
+            modalBody.innerHTML = `<p class="text-danger">Error loading details: ${error.message}</p>`;
+        }
+    }
+
+
+     // Delete Confirmation Modal
+     let itemToDelete = { type: null, id: null };
+
+     function showDeleteConfirmModal(type, id) {
+         itemToDelete = { type, id };
+         const message = document.getElementById('deleteConfirmMessage');
+         message.textContent = `Are you sure you want to delete this ${type}? This action cannot be undone.`;
+         // Add specific warnings
+         if (type === 'customer') {
+             message.textContent += " Deleting a customer will also remove their Khata history (though associated transactions remain).";
+         } else if (type === 'transaction') {
+              message.textContent += " Deleting a transaction will attempt to reverse stock and balance changes.";
+         } else if (type === 'product') {
+            // Check if product is in transactions?
+             message.textContent += " Ensure this product is not part of any existing transaction records before deleting.";
+         }
+
+         openModal('deleteConfirmModal');
+     }
+
+     async function confirmDelete() {
+         const { type, id } = itemToDelete;
+         if (!type || id === null) return;
+
+         console.log(`Attempting to delete ${type} with ID ${id}`);
+         const deleteButton = document.getElementById('confirmDeleteBtn');
+         deleteButton.disabled = true; // Prevent double clicks
+         deleteButton.textContent = 'Deleting...';
+
+
+         try {
+             let success = false;
+             if (type === 'product') {
+                 await deleteProduct(id);
+                 success = true;
+                 loadProductsTable();
+                 loadDashboardData();
+             } else if (type === 'customer') {
+                 // Consider checking balance before delete?
+                // const customer = await getCustomer(id);
+                // if(customer && customer.balance != 0) {
+                //     if(!confirm(`This customer has an outstanding balance of ${formatCurrency(customer.balance)}. Are you sure you want to delete?`)) {
+                //          closeModal('deleteConfirmModal');
+                //          deleteButton.disabled = false;
+                //          deleteButton.textContent = 'Delete';
+                //          return;
+                //     }
+                // }
+                 await deleteCustomer(id);
+                  // Also delete associated payments? This could mess up Khata history if not careful.
+                 // Let's leave payments for now.
+                 success = true;
+                 loadCustomersTable();
+                 loadDashboardData();
+                 loadCustomerDropdowns([
+                     'transactionCustomer', 'khataCustomerSelect', 'paymentCustomer', 'reportCustomerSelect'
+                 ], true);
+             } else if (type === 'transaction') {
+                 await deleteTransaction(id); // This handles stock/balance rollback
+                 success = true;
+                 loadTransactionsTable();
+                 loadDashboardData();
+                 loadProductsTable(); // Refresh stock
+                 loadCustomersTable(); // Refresh balances
+                 // Refresh Khata if customer was involved and is currently viewed
+                  const transaction = await getTransaction(id); // Need to re-fetch deleted transaction to find customer? No, this won't work.
+                  // We need to know the customer *before* deleting if we want to refresh Khata.
+                  // Simplification: User might need to manually re-select customer in Khata tab after deleting a transaction.
+             }
+
+             if (success) {
+                 showAlert('Success', `${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully.`);
+             }
+
+         } catch (error) {
+             console.error(`Error deleting ${type}:`, error);
+             showAlert('Error', `Failed to delete ${type}: ${error.message}`);
+         } finally {
+             closeModal('deleteConfirmModal');
+             itemToDelete = { type: null, id: null }; // Reset
+             deleteButton.disabled = false;
+             deleteButton.textContent = 'Delete';
+         }
+     }
+
+    // --- Reports ---
+    function setupReportFilters() {
+        const reportTypeSelect = document.getElementById('reportTypeSelect');
+        const dateContainer = document.getElementById('reportDateContainer');
+        const startDateContainer = document.getElementById('reportStartDateContainer');
+        const endDateContainer = document.getElementById('reportEndDateContainer');
+        const customerContainer = document.getElementById('reportCustomerContainer');
+        const productContainer = document.getElementById('reportProductContainer');
+
+         // Set default dates
+         setDefaultDateInputs();
+
+
+        function toggleFilters() {
+            const type = reportTypeSelect.value;
+            dateContainer.classList.toggle('hidden', type !== 'daily');
+            startDateContainer.classList.toggle('hidden', type !== 'date-range');
+            endDateContainer.classList.toggle('hidden', type !== 'date-range');
+            customerContainer.classList.toggle('hidden', type !== 'customer');
+            productContainer.classList.toggle('hidden', type !== 'product');
+        }
+
+        reportTypeSelect.addEventListener('change', toggleFilters);
+        toggleFilters(); // Initial setup
+
+         // Load dropdowns for filters
+         loadCustomerDropdowns(['reportCustomerSelect']);
+         loadProductDropdowns(['reportProductSelect']);
+    }
+
+    async function generateReport() {
+        const reportType = document.getElementById('reportTypeSelect').value;
+        const reportResultsDiv = document.getElementById('reportResults');
+        const tableHead = document.getElementById('reportTableHead');
+        const tableBody = document.getElementById('reportTableBody');
+        const tableTitle = document.getElementById('reportTableTitle');
+
+        reportResultsDiv.classList.add('hidden'); // Hide previous results
+        tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Generating report...</td></tr>'; // Show loading state
+
+
+         try {
+             const [transactions, customers, products, payments] = await Promise.all([
+                 getAllTransactions(),
+                 getAllCustomers(),
+                 getAllProducts(),
+                 getAllPayments()
+             ]);
+
+             const customerMap = new Map(customers.map(c => [c.id, c.name]));
+             const productMap = new Map(products.map(p => [p.id, { name: p.name, cost: p.costPrice }]));
+
+             let filteredTransactions = transactions;
+             let reportTitle = '';
+             let headers = [];
+             let rows = [];
+             let summary = { totalSales: 0, totalPurchases: 0, totalProfit: 0, itemsSold: 0, paymentsReceived: 0 }; // Added paymentsReceived
+
+             // --- Filtering Logic ---
+             switch (reportType) {
+                 case 'daily':
+                     const date = document.getElementById('reportDate').value;
+                      reportTitle = `Daily Summary for ${formatDate(date)}`;
+                     filteredTransactions = transactions.filter(t => t.date === date);
+                      // Also filter payments for the day
+                      const dailyPayments = payments.filter(p => p.date === date);
+                      summary.paymentsReceived = dailyPayments.reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+                     break;
+                 case 'date-range':
+                     const startDate = document.getElementById('reportStartDate').value;
+                     const endDate = document.getElementById('reportEndDate').value;
+                      reportTitle = `Report from ${formatDate(startDate)} to ${formatDate(endDate)}`;
+                     filteredTransactions = transactions.filter(t => t.date >= startDate && t.date <= endDate);
+                     const rangePayments = payments.filter(p => p.date >= startDate && p.date <= endDate);
+                     summary.paymentsReceived = rangePayments.reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+                     break;
+                 case 'customer':
+                     const customerId = parseInt(document.getElementById('reportCustomerSelect').value);
+                     if (!customerId) {
+                         showAlert('Info', 'Please select a customer.');
+                         tableBody.innerHTML = '';
+                         return;
+                     }
+                     const custName = customerMap.get(customerId) || 'Unknown Customer';
+                      reportTitle = `Report for Customer: ${custName}`;
+                     filteredTransactions = transactions.filter(t => t.customerId === customerId);
+                     const customerPayments = payments.filter(p => p.customerId === customerId);
+                     summary.paymentsReceived = customerPayments.reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+                     break;
+                 case 'product':
+                     const productId = parseInt(document.getElementById('reportProductSelect').value);
+                     if (!productId) {
+                         showAlert('Info', 'Please select a product.');
+                          tableBody.innerHTML = '';
+                         return;
+                     }
+                      const prodInfo = productMap.get(productId);
+                      const prodName = prodInfo ? prodInfo.name : 'Unknown Product';
+                      reportTitle = `Report for Product: ${prodName}`;
+                     // Filter transactions that *include* this product
+                     filteredTransactions = transactions.filter(t => t.items && t.items.some(item => item.productId === productId));
+                     // Payments are not directly related to a single product, so summary.paymentsReceived isn't relevant here.
+                     break;
+                 default:
+                      tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Invalid report type</td></tr>';
+                     return;
+             }
+
+            // --- Data Processing & Table Generation ---
+            tableTitle.textContent = reportTitle;
+            tableBody.innerHTML = ''; // Clear loading/previous
+
+
+             if (filteredTransactions.length === 0 && reportType !== 'customer' && reportType !== 'daily' && reportType !== 'date-range') { // Payments might exist even without transactions for customer/daily/range
+                 tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No transactions found for the selected criteria.</td></tr>';
+                // Still show summary potentially
+             } else {
+                 // Default headers
+                 headers = ['Date', 'Type', 'Customer/Supplier', 'Items', 'Total', 'Paid', 'Balance'];
+
+                 if (reportType === 'product') {
+                      headers = ['Date', 'Type', 'Transaction ID', 'Customer', 'Quantity', 'Unit Price', 'Total'];
+                     filteredTransactions.forEach(t => {
+                          const customerName = customerMap.get(t.customerId) || (t.type === 'buy' ? 'Supplier' : 'Walk-in');
+                          // Find the specific item within the transaction
+                          const relevantItem = t.items.find(item => item.productId === parseInt(document.getElementById('reportProductSelect').value));
+                          if (relevantItem) {
+                              rows.push([
+                                  formatDate(t.date),
+                                  t.type === 'sell' ? 'Sale' : 'Purchase',
+                                  t.id, // Transaction ID
+                                  customerName,
+                                  relevantItem.quantity,
+                                  formatCurrency(relevantItem.price),
+                                  formatCurrency(relevantItem.total)
+                              ]);
+                              // Update summary based on this item for this product report
+                              if (t.type === 'sell') {
+                                 summary.totalSales += relevantItem.total;
+                                 summary.itemsSold += relevantItem.quantity;
+                                 const productInfo = productMap.get(relevantItem.productId);
+                                 if (productInfo) {
+                                     summary.totalProfit += (relevantItem.price - productInfo.cost) * relevantItem.quantity;
+                                 }
+                             } else { // buy
+                                 summary.totalPurchases += relevantItem.total;
+                             }
+                          }
+                     });
+
+                 } else { // Daily, Date Range, Customer reports use default transaction view
+                     filteredTransactions.sort((a,b) => new Date(a.date) - new Date(b.date)); // Sort chronologically
+                     filteredTransactions.forEach(t => {
+                         const customerName = customerMap.get(t.customerId) || (t.type === 'buy' ? 'Supplier' : 'Walk-in');
+                         const itemCount = t.items ? t.items.length : 0;
+                         const total = parseFloat(t.total || 0);
+                         const paid = parseFloat(t.paid || 0);
+                         const balance = total - paid;
+                         const balanceText = formatCurrency(balance);
+
+                         rows.push([
+                             formatDate(t.date),
+                             t.type === 'sell' ? 'Sale' : 'Purchase',
+                             customerName,
+                             `${itemCount} item(s)`,
+                             formatCurrency(total),
+                             formatCurrency(paid),
+                             balanceText
+                         ]);
+
+                          // Update overall summary
+                           if (t.type === 'sell') {
+                               summary.totalSales += total;
+                               summary.itemsSold += t.items.reduce((sum, item) => sum + item.quantity, 0);
+                               t.items.forEach(item => {
+                                    const productInfo = productMap.get(item.productId);
+                                    if (productInfo) {
+                                        summary.totalProfit += (item.price - productInfo.cost) * item.quantity;
+                                    }
+                               });
+                           } else { // buy
+                               summary.totalPurchases += total;
+                           }
+                     });
+                 }
+
+
+                // Populate table header
+                 tableHead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
+
+                 // Populate table body
+                 if (rows.length > 0) {
+                     rows.forEach(rowData => {
+                         tableBody.innerHTML += `<tr>${rowData.map(d => `<td>${d}</td>`).join('')}</tr>`;
+                     });
+                 } else {
+                      tableBody.innerHTML = `<tr><td colspan="${headers.length}" class="text-center">No relevant transactions found.</td></tr>`;
+                 }
+             }
+
+
+             // Update Summary Cards
+             document.getElementById('reportTotalSales').textContent = formatCurrency(summary.totalSales);
+             document.getElementById('reportTotalPurchases').textContent = formatCurrency(summary.totalPurchases);
+             document.getElementById('reportTotalProfit').textContent = formatCurrency(summary.totalProfit);
+              document.getElementById('reportItemsSold').textContent = summary.itemsSold;
+             // Add Payments Received to summary display if relevant (optional)
+              const paymentsCard = document.getElementById('reportTotalPayments'); // Assuming you add this card
+             if (paymentsCard && (reportType === 'daily' || reportType === 'date-range' || reportType === 'customer')) {
+                 paymentsCard.closest('.summary-card').style.display = 'block'; // Show the card
+                 paymentsCard.textContent = formatCurrency(summary.paymentsReceived);
+             } else if (paymentsCard) {
+                 paymentsCard.closest('.summary-card').style.display = 'none'; // Hide for product report
+             }
+
+
+             reportResultsDiv.classList.remove('hidden'); // Show results section
+
+         } catch (error) {
+             console.error("Error generating report:", error);
+             showAlert('Error', `Failed to generate report: ${error.message}`);
+              tableBody.innerHTML = `<tr><td colspan="5" class="text-center">Error generating report.</td></tr>`;
+         }
+    }
+
+     // --- Backup & Restore ---
+
+     function manualBackup() {
+         Promise.all([
+             getAllData('settings'),
+             getAllData('products'),
+             getAllData('customers'),
+             getAllData('transactions'),
+             getAllData('payments')
+         ]).then(([settingsData, productsData, customersData, transactionsData, paymentsData]) => {
+             const backupData = {
+                 timestamp: new Date().toISOString(),
+                 settings: settingsData[0] || settings, // Get the single settings object or default
+                 products: productsData,
+                 customers: customersData,
+                 transactions: transactionsData,
+                 payments: paymentsData
+             };
+
+             const dataStr = JSON.stringify(backupData, null, 2); // Pretty print JSON
+             const dataBlob = new Blob([dataStr], { type: 'application/json' });
+             const url = URL.createObjectURL(dataBlob);
+
+             const link = document.createElement('a');
+             link.href = url;
+             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+             link.download = `inventory_backup_${timestamp}.json`;
+             document.body.appendChild(link);
+             link.click();
+             document.body.removeChild(link);
+             URL.revokeObjectURL(url);
+
+             showAlert('Success', 'Backup file created and download initiated.');
+
+         }).catch(error => {
+             console.error("Error creating manual backup:", error);
+             showAlert('Error', `Failed to create backup: ${error.message}`);
+         });
+     }
+
+    function initAutoBackup() {
+        if (autoBackupIntervalId) {
+            clearInterval(autoBackupIntervalId); // Clear existing interval if any
+        }
+        if (settings.enableAutoBackup && settings.backupInterval > 0) {
+             const intervalMillis = settings.backupInterval * 60 * 1000; // Convert minutes to ms
+             autoBackupIntervalId = setInterval(() => {
+                console.log("Performing automatic backup...");
+                performAutoBackup();
+             }, intervalMillis);
+             console.log(`Auto backup scheduled every ${settings.backupInterval} minutes.`);
+        } else {
+            console.log("Auto backup is disabled.");
+        }
+    }
+
+     function resetAutoBackup() {
+         console.log("Resetting auto backup interval...");
+         initAutoBackup(); // Re-initialize based on current settings
+     }
+
+     function performAutoBackup() {
+         // Auto backup saves to localStorage for simplicity and less user interaction
+         // More robust would be IndexedDB itself or alerting user to download
+          Promise.all([
+             getAllData('settings'),
+             getAllData('products'),
+             getAllData('customers'),
+             getAllData('transactions'),
+             getAllData('payments')
+         ]).then(([settingsData, productsData, customersData, transactionsData, paymentsData]) => {
+             const backupData = {
+                 timestamp: new Date().toISOString(),
+                 settings: settingsData[0] || settings,
+                 products: productsData,
+                 customers: customersData,
+                 transactions: transactionsData,
+                 payments: paymentsData
+             };
+             try {
+                 localStorage.setItem('inventoryAutoBackup', JSON.stringify(backupData));
+                 console.log(`Auto backup successful at ${backupData.timestamp}`);
+                  // Optionally show a subtle notification
+             } catch (e) {
+                  console.error("Error saving auto backup to localStorage:", e);
+                  // Handle potential storage limit errors
+                  if (e.name === 'QuotaExceededError') {
+                     showAlert('Warning', 'Auto backup failed: Local storage quota exceeded. Consider manual backup or clearing space.');
+                     // Optionally disable auto backup temporarily
+                      settings.enableAutoBackup = false;
+                      document.getElementById('autoBackupSwitch').checked = false;
+                      saveSettings(); // Save the disabled state
+                  }
+             }
+         }).catch(error => {
+             console.error("Error performing auto backup:", error);
+         });
+     }
+
+     function handleRestoreFileSelect(event) {
+         const file = event.target.files[0];
+         if (!file) {
+             showAlert('Info', 'No file selected.');
+             return;
+         }
+         if (!file.name.endsWith('.json')) {
+              showAlert('Warning', 'Please select a valid JSON backup file (.json).');
+              event.target.value = ''; // Clear the input
+              return;
+         }
+         // File is selected, enable restore button maybe? Or just wait for click.
+     }
+
+
+     function restoreBackup() {
+         const fileInput = document.getElementById('restoreFile');
+         const file = fileInput.files[0];
+
+         if (!file) {
+             showAlert('Warning', 'Please select a backup file to restore.');
+             return;
+         }
+
+         if (!confirm('Restoring from backup will OVERWRITE all current data. Are you absolutely sure you want to proceed?')) {
+             return;
+         }
+
+         const reader = new FileReader();
+         reader.onload = function(event) {
+             try {
+                 const backupData = JSON.parse(event.target.result);
+
+                 // Validate basic structure (optional but recommended)
+                 if (!backupData || !backupData.timestamp || !Array.isArray(backupData.products) || !Array.isArray(backupData.customers) || !Array.isArray(backupData.transactions) || !Array.isArray(backupData.payments) || typeof backupData.settings !== 'object') {
+                     throw new Error('Invalid backup file format.');
+                 }
+
+                 console.log(`Restoring data from backup dated: ${backupData.timestamp}`);
+
+                 // Clear existing data and restore
+                 clearAndRestoreData(backupData);
+
+             } catch (e) {
+                 console.error("Error parsing or validating backup file:", e);
+                 showAlert('Error', `Failed to restore: ${e.message}. Ensure the file is a valid backup.`);
+             }
+         };
+         reader.onerror = function() {
+             console.error("Error reading backup file:", reader.error);
+             showAlert('Error', 'Failed to read the selected backup file.');
+         };
+         reader.readAsText(file);
+     }
+
+     async function clearAndRestoreData(data) {
+         const storeNames = ['settings', 'products', 'customers', 'transactions', 'payments'];
+
+         try {
+             // 1. Clear existing data from all stores
+              console.log("Clearing existing data...");
+              const clearPromises = storeNames.map(storeName => {
+                 return new Promise((resolve, reject) => {
+                     const store = getObjectStore(storeName, 'readwrite');
+                     if (!store) return reject(`Failed to get store: ${storeName}`);
+                     const request = store.clear();
+                     request.onsuccess = resolve;
+                     request.onerror = (e) => reject(`Failed to clear ${storeName}: ${e.target.error}`);
+                 });
+              });
+             await Promise.all(clearPromises);
+              console.log("All stores cleared.");
+
+             // 2. Add restored data
+              console.log("Restoring data...");
+              const restorePromises = [];
+
+             // Restore Settings (single object)
+             if (data.settings) {
+                 restorePromises.push(saveData('settings', { id: 1, ...data.settings })); // Ensure ID 1
+             }
+
+             // Restore Products, Customers, Transactions, Payments (arrays)
+             ['products', 'customers', 'transactions', 'payments'].forEach(storeName => {
+                 if (Array.isArray(data[storeName])) {
+                     data[storeName].forEach(item => {
+                         // Important: Remove 'id' if present and store uses autoIncrement,
+                         // UNLESS you want to preserve specific IDs (can cause conflicts).
+                         // Assuming we want to let DB generate new IDs on restore to avoid conflicts.
+                         // However, relations (customerId, productId) depend on original IDs.
+                         // SAFEST is to restore with original IDs, but requires careful handling
+                         // if the backup has ID conflicts with potential future data.
+                         // Let's try restoring with original IDs for now.
+                         restorePromises.push(saveData(storeName, item));
+                     });
+                 }
+             });
+
+             await Promise.all(restorePromises);
+              console.log("Data restore complete.");
+
+             // 3. Reload everything
+             showAlert('Success', 'Data restored successfully! The application will now reload.');
+
+              // Force reload after a short delay to ensure data is flushed and UI reflects changes
+             setTimeout(() => {
+                 window.location.reload();
+             }, 1500);
+
+
+         } catch (error) {
+             console.error("Error during clear/restore process:", error);
+             showAlert('Error', `Restore failed during data update: ${error}. Data might be in an inconsistent state.`);
+         }
+     }
+
+
+    // --- Search Functionality ---
+    function setupSearchListeners() {
+        document.getElementById('productSearchInput').addEventListener('input', (e) => loadProductsTable(e.target.value));
+        document.getElementById('customerSearchInput').addEventListener('input', (e) => loadCustomersTable(e.target.value));
+        document.getElementById('transactionSearchInput').addEventListener('input', (e) => loadTransactionsTable(e.target.value));
+    }
+
+    // --- Tab Switching ---
+    function switchTab(targetTabId) {
+        // Hide all content tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        // Deactivate all menu links
+        document.querySelectorAll('.menu li a').forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // Show the target tab content
+        const targetTabContent = document.getElementById(targetTabId);
+        if (targetTabContent) {
+            targetTabContent.classList.add('active');
+        } else {
+             console.warn(`Tab content with ID "${targetTabId}" not found.`);
+             // Activate dashboard as default fallback
+             document.getElementById('dashboard').classList.add('active');
+             document.querySelector('.menu a[data-tab="dashboard"]').classList.add('active');
+             return; // Exit early if target tab not found
+        }
+
+        // Activate the corresponding menu link
+        const targetMenuLink = document.querySelector(`.menu a[data-tab="${targetTabId}"]`);
+        if (targetMenuLink) {
+            targetMenuLink.classList.add('active');
+        }
+
+         // Load data for the activated tab if needed (e.g., always refresh tables on tab switch)
+         console.log("Switched to tab:", targetTabId);
+         switch (targetTabId) {
+             case 'dashboard':
+                 loadDashboardData();
+                 break;
+             case 'inventory':
+                 loadProductsTable();
+                 break;
+             case 'customers':
+                 loadCustomersTable();
+                 break;
+             case 'transactions':
+                 loadTransactionsTable();
+                 break;
+             case 'khata':
+                  loadCustomerDropdowns(['khataCustomerSelect']); // Reload dropdown
+                  // Don't automatically load a customer's khata, wait for selection
+                  document.getElementById('customerKhataDetails').classList.add('hidden');
+                 break;
+             case 'reports':
+                  setupReportFilters(); // Ensure filters are set up correctly
+                  document.getElementById('reportResults').classList.add('hidden'); // Hide old results
+                 break;
+              case 'settings':
+                  loadSettings(); // Reload settings from DB when switching to tab
+                  break;
+              case 'backup':
+                  // No specific data load needed usually
+                  break;
+         }
+    }
+
+    // --- Printing ---
+    function printElement(elementToPrint) {
+        // Temporarily add print-specific classes or styles
+        const printSection = elementToPrint.closest('.modal-body') || elementToPrint; // Find container
+        const headers = printSection.querySelectorAll('.print-header, .print-footer');
+        headers.forEach(h => h.classList.remove('hidden')); // Show print headers/footers
+
+        // Use browser's print functionality
+        window.print();
+
+        // Hide print headers/footers again after printing
+        headers.forEach(h => h.classList.add('hidden'));
+    }
+
+    function printKhata() {
+        const khataDetails = document.getElementById('customerKhataDetails');
+        if (!khataDetails || khataDetails.classList.contains('hidden')) {
+            showAlert('Info', 'Please select a customer to view their Khata first.');
+            return;
+        }
+
+        // Add print headers/footers dynamically before printing this specific section
+        const customerName = document.getElementById('khataCustomerName').textContent;
+        const printContainer = document.createElement('div');
+
+         const header = `
+            <div class="print-header">
+                <h2 class="print-business-name">${settings.businessName}</h2>
+                <p class="print-business-address">${settings.businessAddress || ''}</p>
+                <p class="print-business-contact">Phone: ${settings.businessPhone || 'N/A'} | Email: ${settings.businessEmail || 'N/A'}</p>
+                <h3 class="print-title">Customer Ledger: ${customerName}</h3>
+                <p>Outstanding Balance: ${document.getElementById('khataOutstandingBalance').textContent}</p>
+             </div>
+         `;
+          const footer = `
+             <div class="print-footer">
+                 <p>Generated on: ${new Date().toLocaleString()}</p>
+             </div>
+         `;
+
+        printContainer.innerHTML = header + khataDetails.innerHTML + footer;
+
+         // Need a way to print only this container. Create a temporary iframe.
+         const iframe = document.createElement('iframe');
+         iframe.style.position = 'absolute';
+         iframe.style.width = '0';
+         iframe.style.height = '0';
+         iframe.style.border = '0';
+         document.body.appendChild(iframe);
+
+         const pri = iframe.contentWindow;
+         pri.document.open();
+          // Add base styles needed for printing
+         const styles = document.querySelector('style').innerHTML;
+         pri.document.write(`<html><head><title>Print Khata</title><style>${styles}</style></head><body>`);
+         pri.document.write(printContainer.innerHTML);
+         pri.document.write('</body></html>');
+         pri.document.close();
+
+         pri.focus(); // Required for some browsers
+         pri.print();
+
+         // Clean up the iframe
+         document.body.removeChild(iframe);
+
+    }
+
+    function printReport() {
+        const reportResults = document.getElementById('reportResults');
+         if (!reportResults || reportResults.classList.contains('hidden')) {
+             showAlert('Info', 'Please generate a report first.');
+             return;
+         }
+
+         const reportTitle = document.getElementById('reportTableTitle').textContent;
+         const printContainer = document.createElement('div');
+
+          const header = `
+            <div class="print-header">
+                <h2 class="print-business-name">${settings.businessName}</h2>
+                <p class="print-business-address">${settings.businessAddress || ''}</p>
+                <p class="print-business-contact">Phone: ${settings.businessPhone || 'N/A'} | Email: ${settings.businessEmail || 'N/A'}</p>
+                <h3 class="print-title">${reportTitle}</h3>
+             </div>
+         `;
+           const footer = `
+             <div class="print-footer">
+                 <p>Generated on: ${new Date().toLocaleString()}</p>
+             </div>
+         `;
+
+         printContainer.innerHTML = header + reportResults.innerHTML + footer;
+
+
+          // Use iframe method for cleaner printing
+          const iframe = document.createElement('iframe');
+          iframe.style.position = 'absolute';
+          iframe.style.width = '0';
+          iframe.style.height = '0';
+          iframe.style.border = '0';
+          document.body.appendChild(iframe);
+
+          const pri = iframe.contentWindow;
+          pri.document.open();
+           const styles = document.querySelector('style').innerHTML;
+           pri.document.write(`<html><head><title>Print Report</title><style>${styles}</style></head><body>`);
+           pri.document.write(printContainer.innerHTML);
+           pri.document.write('</body></html>');
+           pri.document.close();
+           pri.focus();
+           pri.print();
+           document.body.removeChild(iframe);
+
+    }
+
+
+    // --- Event Listener Setup ---
+
+    // Utility to safely attach event listeners, especially after dynamic content updates
+    function attachEventListeners(selector, eventType, handler) {
+        document.querySelectorAll(selector).forEach(element => {
+            // Remove existing listener to prevent duplicates if re-attaching
+            element.removeEventListener(eventType, handler);
+            // Add the new listener
+            element.addEventListener(eventType, handler);
+        });
+    }
+
+    function setupInitialEventListeners() {
+        // Tab Switching
+        document.querySelectorAll('.menu a').forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const tabId = event.target.closest('a').getAttribute('data-tab');
+                switchTab(tabId);
+            });
+        });
+
+        // Modal Open Buttons
+        document.getElementById('addProductBtn').addEventListener('click', () => showProductModal());
+        document.getElementById('addCustomerBtn').addEventListener('click', () => showCustomerModal());
+        document.getElementById('newBuyBtn').addEventListener('click', () => showTransactionModal('buy'));
+        document.getElementById('newSellBtn').addEventListener('click', () => showTransactionModal('sell'));
+        document.getElementById('addPaymentBtn').addEventListener('click', () => showPaymentModal());
+
+
+        // Modal Close Buttons (using specific IDs)
+        document.getElementById('closeProductModal').addEventListener('click', () => closeModal('productModal'));
+        document.getElementById('cancelProductBtn').addEventListener('click', () => closeModal('productModal'));
+        document.getElementById('closeCustomerModal').addEventListener('click', () => closeModal('customerModal'));
+        document.getElementById('cancelCustomerBtn').addEventListener('click', () => closeModal('customerModal'));
+        document.getElementById('closeTransactionModal').addEventListener('click', () => closeModal('transactionModal'));
+        document.getElementById('cancelTransactionBtn').addEventListener('click', () => closeModal('transactionModal'));
+         document.getElementById('closePaymentModal').addEventListener('click', () => closeModal('paymentModal'));
+         document.getElementById('cancelPaymentBtn').addEventListener('click', () => closeModal('paymentModal'));
+         document.getElementById('closeViewTransactionModal').addEventListener('click', () => closeModal('viewTransactionModal'));
+         document.getElementById('closeViewTransactionBtn').addEventListener('click', () => closeModal('viewTransactionModal'));
+         document.getElementById('closeDeleteConfirmModal').addEventListener('click', () => closeModal('deleteConfirmModal'));
+         document.getElementById('cancelDeleteBtn').addEventListener('click', () => closeModal('deleteConfirmModal'));
+         document.getElementById('closeAlertModal').addEventListener('click', closeAlertModal);
+         document.getElementById('okAlertBtn').addEventListener('click', closeAlertModal);
+
+
+        // Modal Save Buttons
+        document.getElementById('saveProductBtn').addEventListener('click', saveProduct);
+        document.getElementById('saveCustomerBtn').addEventListener('click', saveCustomer);
+        document.getElementById('saveTransactionBtn').addEventListener('click', saveTransaction);
+        document.getElementById('savePaymentBtn').addEventListener('click', savePayment);
+        document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
+
+        // Transaction Modal Specifics
+        document.getElementById('addTransactionItemBtn').addEventListener('click', ()=>addTransactionItemRow()); // Pass no arg to add empty
+         document.getElementById('transactionPaid').addEventListener('input', updateTransactionTotals);
+
+
+        // Khata Selection
+        document.getElementById('khataCustomerSelect').addEventListener('change', (e) => showCustomerKhata(parseInt(e.target.value)));
+         document.getElementById('paymentCustomer').addEventListener('change', (e) => updatePaymentOutstandingBalance(parseInt(e.target.value)));
+
+
+        // Reports
+        document.getElementById('generateReportBtn').addEventListener('click', generateReport);
+         document.getElementById('printReportBtn').addEventListener('click', printReport);
+         document.getElementById('printKhataBtn').addEventListener('click', printKhata);
+
+        // Settings
+        document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+        document.getElementById('logoUpload').addEventListener('change', handleLogoUpload);
+         document.getElementById('autoBackupSwitch').addEventListener('change', (e) => {
+             settings.enableAutoBackup = e.target.checked;
+             resetAutoBackup();
+             // Save setting immediately or wait for main save button? Let's wait.
+             // saveSettings(); // Uncomment to save immediately on toggle
+         });
+
+
+        // Backup & Restore
+        document.getElementById('manualBackupBtn').addEventListener('click', manualBackup);
+        document.getElementById('restoreFile').addEventListener('change', handleRestoreFileSelect);
+        document.getElementById('restoreBackupBtn').addEventListener('click', restoreBackup);
+
+        // Search inputs
+        setupSearchListeners();
+
+        // Attach listeners for dynamically added buttons in tables initially
+        attachEventListeners('#lowStockTable .stock-in-btn', 'click', handleStockInClick);
+        attachEventListeners('#productsTable .edit-product-btn', 'click', handleEditProductClick);
+        attachEventListeners('#productsTable .delete-product-btn', 'click', handleDeleteProductClick);
+        attachEventListeners('#customersTable .edit-customer-btn', 'click', handleEditCustomerClick);
+        attachEventListeners('#customersTable .view-khata-btn', 'click', handleViewKhataClick);
+        attachEventListeners('#customersTable .delete-customer-btn', 'click', handleDeleteCustomerClick);
+        attachEventListeners('#transactionsTable .view-transaction-btn', 'click', handleViewTransactionClick);
+        attachEventListeners('#transactionsTable .delete-transaction-btn', 'click', handleDeleteTransactionClick);
+
+    }
+
+    // --- Initialization ---
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log("DOM fully loaded and parsed");
+        setCurrentDateDisplay(); // Set date display on top
+
+        // Initialize DB, then load settings, then load initial data and listeners
+        initDatabase()
+            .then(() => {
+                console.log("Database initialized successfully.");
+                return loadSettings(); // Load settings first
+            })
+            .then(() => {
+                 console.log("Settings loaded. Proceeding with UI setup.");
+                 // Load initial data for the default tab (Dashboard)
+                 loadDashboardData();
+                 // Setup event listeners for interactions
+                 setupInitialEventListeners();
+                 // Start auto backup if enabled
+                 initAutoBackup();
+                 // Set default dates in date input fields
+                 setDefaultDateInputs();
+                 // Make sure the default tab is visually active
+                 switchTab('dashboard');
+                 console.log("Application initialized.");
+            })
+            .catch(error => {
+                console.error("Initialization failed:", error);
+                 // Display a critical error message to the user if DB init fails
+                if (error === 'Failed to open database') {
+                     // Alert already shown by initDatabase
+                 } else {
+                      showAlert('Critical Error', `Application could not start correctly: ${error}. Please refresh the page or check browser compatibility.`);
+                 }
+            });
+    });
+
+  </script>
+</body>
+</html>
